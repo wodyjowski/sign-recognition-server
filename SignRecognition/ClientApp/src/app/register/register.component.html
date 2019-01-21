@@ -1,0 +1,42 @@
+<div class="register-form">
+<h2 class="register-header">Create new account</h2>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()"  class="register-bottom">
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">Username is required</div>
+            <div *ngIf="f.username.errors.minlength">Username is too short</div>
+        </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Email</label>
+      <input type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+      <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+          <div *ngIf="f.email.errors.required">Email is required</div>
+          <div *ngIf="f.email.errors.email">Invalid email address</div>
+      </div>
+  </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }"/>
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">Password is required</div>
+            <div *ngIf="f.password.errors.minlength">Password is too short</div>
+        </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Confirm Password</label>
+      <input type="password" formControlName="cpassword" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.cpassword.errors }" />
+      <div *ngIf="submitted && f.cpassword.errors" class="invalid-feedback">
+          <div *ngIf="f.cpassword.errors.required">Password confirmation is required</div>
+          <div *ngIf="f.cpassword.errors.MatchPassword">Passwords doesn't match</div>
+      </div>
+  </div>
+    <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">Register</button>
+        <div *ngIf="loading" class="lds-dual-ring centered"></div>
+    </div>
+    <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+</form>
+</div>

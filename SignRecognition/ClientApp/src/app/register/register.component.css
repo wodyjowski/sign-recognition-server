@@ -1,0 +1,15 @@
+.register-header
+{
+  padding-top: 20px;
+}
+
+.register-bottom
+{
+  padding-bottom: 20px;
+}
+
+.register-form
+{
+  max-width: 600px;
+  margin: auto;
+}

@@ -1,0 +1,41 @@
+agm-map {
+    height: 60vh;
+  }
+
+.input-location{
+  margin-bottom: 15px;
+}
+
+.dark{
+  background-color: #f4f4f4;
+}
+
+.sun-list{
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.circle {
+  height: 28px;
+  width: 28px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.sunrise{
+  background-color: #ff7f50;
+}
+
+.goldenH{
+  background-color: #ffd700;
+}
+
+.sunset{
+  background-color: #1a454a;
+}
+
+.highsun{
+  background-color: #FFC100;
+}

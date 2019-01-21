@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand nav-toggler" href="javascript:;" [routerLink]='[""]'><b>SR</b>ecognition</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }'>
+        <a class="nav-link" href="javascript:;" [routerLink]='[""]'>Home</a>
+      </li>
+      <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }' *ngIf="!status">
+        <a class="nav-link" href="javascript:;" [routerLink]='["locationlist"]'>Location list</a>
+      </li>
+    </ul>
+    <span class="navbar-text">
+      <a class="btn btn-outline-success my-2 my-sm-0 nav-toggler"
+      [ngClass]="status ? 'btn-outline-success' : 'btn-outline-danger'"
+      href="javascript:;" (click)="loginClick()">{{ isLoggedTittle }}</a>
+    </span>
+  </div>
+</nav>

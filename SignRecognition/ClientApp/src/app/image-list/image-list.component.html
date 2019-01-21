@@ -1,0 +1,20 @@
+<h2 class="location-header loc-container">Uploaded photos</h2>
+
+<nav class="nav nav-pills nav-justified pad-bottom">
+    <a class="nav-item nav-link" href="javascript:;" [ngClass]="{ 'active': !allImages }" (click)="my()">My</a>
+    <a class="nav-item nav-link" href="javascript:;" [ngClass]="{ 'active': allImages }" (click)="all()">All</a>
+</nav>
+<div *ngIf="loading" class="lds-dual-ring centered"></div>
+  <h1 *ngIf="imageList?.length < 1">No photos.</h1>
+
+
+<div class="list-group loc-container" >
+    <a class="list-group-item list-group-item-action flex-column align-items-start" *ngFor="let image of imageList" (click)="openLocation(image)">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ image.name }}</h5>
+        <p><a href="javascript:;" class="badge badge-danger" *ngIf="!allImages" (click)="remove(image)">Remove</a></p>
+      </div>
+      <p class="mb-1"><img src="{{ '/GetPhoto/' + image.id }}" class="img-thumbnail img-fluid mx-auto d-block"></p>
+      <small>{{ image.date | date:'dd-MM-yyyy HH:mm' }}</small>
+    </a>
+</div>
