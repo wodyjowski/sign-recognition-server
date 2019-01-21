@@ -35,7 +35,7 @@ namespace SignRecognition.Controllers
                 return null;
             }
 
-            return _appDbContext.Predictions;
+            return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate);
         }
 
         // POST: api/Prediction

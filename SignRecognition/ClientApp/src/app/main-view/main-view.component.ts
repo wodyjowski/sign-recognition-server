@@ -5,8 +5,8 @@ import { MapsAPILoader } from '@agm/core';
 import * as SunCalc from 'suncalc';
 import { ToastrService } from 'ngx-toastr';
 
-import { LocationService } from '../location-service/location.service';
-import { ILocation } from '../location-service/location';
+import { PredictionService } from '../_services/prediction.service';
+import { IPrediction } from '../_models/prediction';
 
 import { ActivatedRoute } from '@angular/router';
 import { Input } from '@angular/compiler/src/core';
@@ -15,7 +15,7 @@ import { FormControl } from '@angular/forms';
 @Component({
   selector: 'app-main-view',
   templateUrl: './main-view.component.html',
-  providers: [ LocationService ],
+  providers: [ PredictionService ],
   styleUrls: ['./main-view.component.css']
 })
 export class MainViewComponent implements OnInit {
@@ -38,7 +38,7 @@ export class MainViewComponent implements OnInit {
 
   constructor(private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone, private toastr: ToastrService,
-    private locationService: LocationService,
+    private locationService: PredictionService,
     private route: ActivatedRoute) {
       this.times = SunCalc.getTimes(Date.now(), this.lat, this.lng);
      }
@@ -115,38 +115,35 @@ export class MainViewComponent implements OnInit {
   }
 
   saveLocation() {
-    const location = new Location(this.palce.name, this.palce.id, this.lat, this.lng);
+    // const location = new Prediction(this.palce.name, this.palce.id, this.lat, this.lng);
 
-    this.locationService.saveLocation(location).subscribe( response => {
-      if (response != null) {
-        console.log(response);
-        if (response.status === 200) {
-          this.toastr.success('Location saved');
-        } else if (response.status === 202) {
-          this.toastr.info('Location already saved');
-        }
+    // this.locationService.saveLocation(location).subscribe( response => {
+    //   if (response != null) {
+    //     console.log(response);
+    //     if (response.status === 200) {
+    //       this.toastr.success('Location saved');
+    //     } else if (response.status === 202) {
+    //       this.toastr.info('Location already saved');
+    //     }
 
-      }
-    });
+    //   }
+    // });
 
   }
 
 }
 
-class Location implements ILocation {
-
+class Prediction implements IPrediction {
 
   constructor(name: string, id: string, lat: number, lng: number) {
-    this.name = name;
-    this.locationId = id;
     this.latitude = lat;
     this.longitude = lng;
   }
 
   id: string;
-  name: string;
-  locationId: string;
+  creationDate: Date;
+  user: string;
+  class: string;
   latitude: number;
   longitude: number;
-  date: Date;
 }

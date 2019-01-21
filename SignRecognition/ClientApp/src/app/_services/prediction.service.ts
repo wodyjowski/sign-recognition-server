@@ -5,23 +5,22 @@ import { HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
-import { ILocation } from './location';
+import { IPrediction } from '../_models/prediction';
 
 
   @Injectable()
-  export class LocationService {
+  export class PredictionService {
 
-    locationUrl = '/Location/Create';  // URL to web api
-    getLocationUrl = '/Location/Get';
+    predictionUrl = 'api/Prediction';
 
     constructor(
         private http: HttpClient) {
       }
 
 
-    saveLocation(location: ILocation): Observable<HttpResponse<ILocation>> {
-      return this.http.post<ILocation>(
-        this.locationUrl,
+    saveLocation(location: IPrediction): Observable<HttpResponse<IPrediction>> {
+      return this.http.post<IPrediction>(
+        this.predictionUrl,
         location,
         {
       headers: new HttpHeaders({
@@ -32,8 +31,8 @@ import { ILocation } from './location';
       });
     }
 
-    geLocations(): Observable<any[]> {
-      return this.http.get<any[]>(this.getLocationUrl);
+    getPredictions(): Observable<any[]> {
+      return this.http.get<IPrediction[]>(this.predictionUrl);
     }
 
   }

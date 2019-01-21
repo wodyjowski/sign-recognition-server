@@ -9,8 +9,11 @@
         <a class="nav-link" href="javascript:;" [routerLink]='[""]'>Home</a>
       </li>
       <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }' *ngIf="!status">
-        <a class="nav-link" href="javascript:;" [routerLink]='["locationlist"]'>Location list</a>
+        <a class="nav-link" href="javascript:;" [routerLink]='["predictionlist"]'>Recognised signs</a>
       </li>
+      <!-- <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }' *ngIf="!status">
+        <a class="nav-link" href="javascript:;" [routerLink]='[""]'>Sign locations</a>
+      </li> -->
     </ul>
     <span class="navbar-text">
       <a class="btn btn-outline-success my-2 my-sm-0 nav-toggler"

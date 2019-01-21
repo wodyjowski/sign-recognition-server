@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoclistComponent } from './loclist.component';
+import { PredictionListComponent } from './prediction-list.component';
 
-describe('LoclistComponent', () => {
-  let component: LoclistComponent;
-  let fixture: ComponentFixture<LoclistComponent>;
+describe('PredictionListComponent', () => {
+  let component: PredictionListComponent;
+  let fixture: ComponentFixture<PredictionListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoclistComponent ]
+      declarations: [ PredictionListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoclistComponent);
+    fixture = TestBed.createComponent(PredictionListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

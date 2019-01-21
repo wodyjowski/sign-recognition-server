@@ -1,0 +1,16 @@
+<h2 class="prediction-header loc-container">Saved predictions 
+<button class="btn btn-secondary" (click)="getLocations()">Refresh <i class="fa fa-refresh" aria-hidden="true"> </i></button></h2>
+<div *ngIf="loading" class="lds-dual-ring centered"></div>
+<h1 *ngIf="predictions?.length < 1 && !loading">No saved predictions.</h1>
+
+
+<div class="list-group loc-container" >
+    <a class="list-group-item list-group-item-action flex-column align-items-start" *ngFor="let prediction of predictions" (click)="navigate(prediction)">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ prediction.class }}</h5>
+        <a>{{ prediction.latitude }} {{ prediction.longitude }}</a>
+        <p><a href="javascript:;" class="badge badge-danger" (click)="remove(prediction)">Remove</a></p>
+      </div>
+      <small>Created: {{ prediction.creationDate | date:'dd-MM-yyyy HH:mm' }}</small>
+    </a>
+</div>

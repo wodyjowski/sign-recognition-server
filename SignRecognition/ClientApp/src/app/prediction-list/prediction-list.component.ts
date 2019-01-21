@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LocationService } from '../location-service/location.service';
-import { ILocation } from '../location-service/location';
+import { PredictionService } from '../_services/prediction.service';
+import { IPrediction } from '../_models/prediction';
 
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -8,17 +8,17 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-loclist',
-  templateUrl: './loclist.component.html',
-  providers: [ LocationService ],
-  styleUrls: ['./loclist.component.css']
+  selector: 'app-prediction-list',
+  templateUrl: './prediction-list.component.html',
+  providers: [ PredictionService ],
+  styleUrls: ['./prediction-list.component.css']
 })
-export class LoclistComponent implements OnInit {
+export class PredictionListComponent implements OnInit {
 
-  locations: ILocation[];
+  predictions: IPrediction[];
   loading = true;
 
-  constructor(private locationService: LocationService,
+  constructor(private locationService: PredictionService,
     private router: Router,
     private http: HttpClient,
     private toastr: ToastrService) { }
@@ -28,23 +28,23 @@ export class LoclistComponent implements OnInit {
   }
 
   getLocations() {
-    this.locations = [];
+    this.predictions = [];
     this.loading = true;
-    this.locationService.geLocations()
-    .subscribe(locations => this.omg(locations));
+    this.locationService.getPredictions()
+    .subscribe(predictions => this.omg(predictions));
   }
 
-  omg (locations) {
-    this.locations = locations;
-    // window.console.log(locations);
+  omg (predictions) {
+    this.predictions = predictions;
+    // window.console.log(predictions);
     this.loading = false;
   }
 
-  navigate(location: ILocation) {
+  navigate(location: IPrediction) {
       this.router.navigate(['/'], { queryParams: { lat: location.latitude, lng: location.longitude }});
   }
 
-  remove (location: ILocation) {
+  remove (location: IPrediction) {
       this.http.post('/Location/Delete', location)
       .pipe(
         catchError(err => this.error(err)))
@@ -53,7 +53,7 @@ export class LoclistComponent implements OnInit {
   }
 
   handleResponse(location) {
-      this.locations.splice(this.locations.indexOf(location), 1);
+      this.predictions.splice(this.predictions.indexOf(location), 1);
       this.toastr.success('Location removed');
   }
 

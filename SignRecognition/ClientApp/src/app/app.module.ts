@@ -24,7 +24,7 @@ import { AgmCoreModule } from '@agm/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { RegisterComponent } from './register/register.component';
-import { LoclistComponent } from './loclist/loclist.component';
+import { PredictionListComponent } from './prediction-list/prediction-list.component';
 import { ImageListComponent } from './image-list/image-list.component';
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 
@@ -39,7 +39,7 @@ import { ImageUploadComponent } from './image-upload/image-upload.component';
     CurrentLocationComponent,
     LoginComponent,
     RegisterComponent,
-    LoclistComponent,
+    PredictionListComponent,
     ImageListComponent,
     ImageUploadComponent
   ],
