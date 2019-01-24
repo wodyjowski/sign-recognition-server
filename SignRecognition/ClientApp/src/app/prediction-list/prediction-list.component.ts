@@ -65,8 +65,9 @@ export class PredictionListComponent implements OnInit {
 
   onScroll() {
     // this.toastr.warning('Scroll');
+    this.loading = true;
     this.locationService.getPredictions(this.page)
-    .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; } );
+    .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false;} );
   }
 
 

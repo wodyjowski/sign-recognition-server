@@ -1,6 +1,5 @@
-<h2 class="prediction-header loc-container">Saved predictions 
-<button class="btn btn-secondary btn-refresh" (click)="getLocations()"><i class="fa fa-refresh" aria-hidden="true"> </i></button></h2>
-<div *ngIf="loading" class="lds-dual-ring centered"></div>
+<h2 class="prediction-header loc-container">Saved predictions <button class="btn btn-secondary btn-refresh" (click)="getLocations()"><i class="fa fa-refresh" aria-hidden="true"> </i></button></h2>
+
 <h1 *ngIf="predictions?.length < 1 && !loading">No saved predictions.</h1>
 
 
@@ -19,3 +18,5 @@ infiniteScroll
       <small>Created: {{ prediction.creationDate | date:'dd-MM-yyyy HH:mm' }}</small>
     </a>
 </div>
+
+<div class="animation-wrapper"><div *ngIf="loading" class="lds-dual-ring load-element"></div></div>

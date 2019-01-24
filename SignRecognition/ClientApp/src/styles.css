@@ -1,4 +1,17 @@
 
+/*LOADING INLINE*/
+.load-element {
+  height: 100% !important;
+  padding-bottom: 50px;
+  padding-top: 50px;
+  display: inline-block;
+}
+.animation-wrapper{
+  text-align: center;
+}
+/*LOADING INLINE*/
+
+
 /*LOADING ANIMATION*/
 
 .lds-dual-ring {
@@ -52,10 +65,15 @@
 -------------------------------------------------- */
 /* Padding below the footer and lighter body text */
 
+html {
+  min-height: 100vh;
+}
+
 body {
   padding-top: 3rem;
   padding-bottom: 3rem;
   color: #5a5a5a;
+  min-height: 100vh;
 }
 
 

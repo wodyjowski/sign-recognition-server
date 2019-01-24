@@ -82,14 +82,13 @@ export class MainViewComponent implements OnInit {
       });
     });
   });
-
-    if (!this.fromParams) {
-      this.getLocation();
-    }
   }
 
   mapReady(map) {
     this.map = map;
+    if (!this.fromParams) {
+      this.getLocation();
+    }
   }
 
   showPosition(lat, lon) {
