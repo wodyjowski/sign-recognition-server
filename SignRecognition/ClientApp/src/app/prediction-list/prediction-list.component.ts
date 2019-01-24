@@ -17,6 +17,7 @@ export class PredictionListComponent implements OnInit {
 
   predictions: IPrediction[];
   loading = true;
+  page = 1;
 
   constructor(private locationService: PredictionService,
     private router: Router,
@@ -60,6 +61,12 @@ export class PredictionListComponent implements OnInit {
   error(err) {
       this.toastr.error('Error');
       return err;
+  }
+
+  onScroll() {
+    // this.toastr.warning('Scroll');
+    this.locationService.getPredictions(this.page)
+    .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; } );
   }
 
 

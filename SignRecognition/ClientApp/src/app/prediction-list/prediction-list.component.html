@@ -1,10 +1,15 @@
 <h2 class="prediction-header loc-container">Saved predictions 
-<button class="btn btn-secondary" (click)="getLocations()">Refresh <i class="fa fa-refresh" aria-hidden="true"> </i></button></h2>
+<button class="btn btn-secondary btn-refresh" (click)="getLocations()"><i class="fa fa-refresh" aria-hidden="true"> </i></button></h2>
 <div *ngIf="loading" class="lds-dual-ring centered"></div>
 <h1 *ngIf="predictions?.length < 1 && !loading">No saved predictions.</h1>
 
 
-<div class="list-group loc-container" >
+
+<div class="list-group loc-container" 
+infiniteScroll
+[infiniteScrollDistance]="1"
+[infiniteScrollThrottle]="250"
+(scrolled)="onScroll()">
     <a class="list-group-item list-group-item-action flex-column align-items-start" *ngFor="let prediction of predictions" (click)="navigate(prediction)">
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1">{{ prediction.class }}</h5>

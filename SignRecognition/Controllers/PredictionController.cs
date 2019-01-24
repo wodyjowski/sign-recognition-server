@@ -25,7 +25,7 @@ namespace SignRecognition.Controllers
 
         // GET: api/Prediction
         [HttpGet]
-        public async Task<IEnumerable<Prediction>> Get()
+        public async Task<IEnumerable<Prediction>> Get([FromQuery] int page = 0, [FromQuery] int amount = 20)
         {
             var user = await _userManager.GetUserAsync(User);
             user = new User();
@@ -35,7 +35,13 @@ namespace SignRecognition.Controllers
                 return null;
             }
 
-            return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate);
+            return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
+        }
+
+        [HttpGet("All")]
+        public async Task<IEnumerable<Prediction>> GetAll([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        {
+            return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
         }
 
         // POST: api/Prediction

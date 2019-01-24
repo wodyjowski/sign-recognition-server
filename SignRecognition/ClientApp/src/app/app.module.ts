@@ -25,9 +25,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { RegisterComponent } from './register/register.component';
 import { PredictionListComponent } from './prediction-list/prediction-list.component';
+
 import { ImageListComponent } from './image-list/image-list.component';
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 
+// Infinite scroll
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -59,7 +62,8 @@ import { ImageUploadComponent } from './image-upload/image-upload.component';
     ToastrModule.forRoot({
       timeOut: 2000,
       positionClass: 'toast-bottom-right'
-    })
+    }),
+    InfiniteScrollModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

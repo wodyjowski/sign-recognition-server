@@ -31,8 +31,11 @@ import { IPrediction } from '../_models/prediction';
       });
     }
 
-    getPredictions(): Observable<any[]> {
-      return this.http.get<IPrediction[]>(this.predictionUrl);
+    getPredictions(pageNum: number = 0): Observable<any[]> {
+      return this.http.get<IPrediction[]>(this.predictionUrl, {
+        params: {
+          page: pageNum.toString()
+        }});
     }
 
   }
