@@ -23,11 +23,14 @@ infiniteScroll
 (scrolled)="onScroll()">
     <a class="list-group-item list-group-item-action flex-column align-items-start" *ngFor="let prediction of predictions" (click)="navigate(prediction)">
       <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">{{ prediction.class }}</h5>
-        <a>{{ prediction.latitude }} {{ prediction.longitude }}</a>
+        <h3 class="mb-1">{{ prediction.class }}</h3>
         <p *ngIf="userPredictions || admin"><a href="javascript:;" class="badge badge-danger" (click)="remove(prediction)">Remove</a></p>
       </div>
-      <small>Created: {{ prediction.creationDate | date:'dd.MM.yyyy HH:mm' }}</small>
+      <div class="prediction-content">
+        <h5 class="mb-1 font-weight-normal">Location: <b>{{ prediction.locationName ? prediction.locationName : 'Unknown' }}</b></h5>
+        <p class="mb-1">Latitude: <b>{{ prediction.latitude }}</b>, Longitude: <b>{{ prediction.longitude }}</b></p>
+      </div>
+      <small>Created: <b>{{ prediction.creationDate | date:'dd.MM.yyyy HH:mm' }}</b></small>
     </a>
 </div>
 

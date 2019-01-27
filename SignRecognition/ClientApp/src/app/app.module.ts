@@ -57,7 +57,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     CommonModule,
     FormsModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDPNvdIOhyjC82iUYNLR2lbxydP8DbTbLk',
+      apiKey: 'AIzaSyCFcgapJG17nwAFC0Yohs0x6Z9IsBwclq4',
       libraries: ['places']
     }),
     ReactiveFormsModule,

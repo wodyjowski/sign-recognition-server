@@ -5,4 +5,5 @@ export interface IPrediction {
   class: string;
   latitude: number;
   longitude: number;
+  locationName?: string;
 }

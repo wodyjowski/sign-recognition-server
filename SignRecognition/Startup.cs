@@ -34,6 +34,9 @@ namespace SignRecognition
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
 
+            //Http client for google maps requests
+            services.AddHttpClient();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

@@ -37,7 +37,7 @@ export class AuthenticationService {
     private emitLogin(user) {
         localStorage.setItem('currentUserName', JSON.stringify(user.userName));
         localStorage.setItem('isAdmin', JSON.stringify(user.adminRights));
-        
+
         this.getLoggedIn.emit(true);
         this.router.navigate([this.returnUrl]);
     }

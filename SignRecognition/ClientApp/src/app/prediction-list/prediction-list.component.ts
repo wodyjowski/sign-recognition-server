@@ -36,7 +36,10 @@ export class PredictionListComponent implements OnInit {
     this.predictionService.getPredictionCount().subscribe(p => this.predCount = p);
     this.predictionService.getUserPredictionCount().subscribe(p => this.userPredCount = p);
 
-    this.admin = JSON.parse(localStorage.getItem('isAdmin'));
+    const admin = JSON.parse(localStorage.getItem('isAdmin'));
+    if (admin) {
+      this.admin = admin;
+    }
   }
 
   getLocations() {

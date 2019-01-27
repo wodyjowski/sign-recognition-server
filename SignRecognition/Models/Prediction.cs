@@ -16,5 +16,6 @@ namespace SignRecognition.Models
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string FileName { get; set; }
+        public string LocationName { get; set; }
     }
 }
