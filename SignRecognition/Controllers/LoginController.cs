@@ -56,14 +56,16 @@ namespace SignRecognition.Controllers
                 return BadRequest(ModelState);
             }
 
-            var userIdentity = new User()
+            var user = new User()
             {
                 UserName = model.Login,
                 Email = model.Email,
                 CreationDate = DateTime.Now
             };
 
-            var result = await _userManager.CreateAsync(userIdentity, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            _userManager.AddToRoleAsync(user, "User").Wait();
 
             if (!result.Succeeded) return StatusCode(208, result);
 

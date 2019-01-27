@@ -32,6 +32,9 @@ import { ImageUploadComponent } from './image-upload/image-upload.component';
 // Infinite scroll
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
+
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,7 +66,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
       timeOut: 2000,
       positionClass: 'toast-bottom-right'
     }),
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    AngularFontAwesomeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
