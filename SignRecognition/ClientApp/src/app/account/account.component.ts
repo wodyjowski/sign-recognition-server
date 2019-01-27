@@ -13,7 +13,7 @@ import { AuthenticationService, UserData } from '../_services';
 export class AccountComponent implements OnInit {
 
   registerForm: FormGroup;
-  loading = false;
+  loading = true;
   submitted = false;
   returnUrl: string;
   error = '';
@@ -37,7 +37,14 @@ export class AccountComponent implements OnInit {
         validator: PasswordValidation.MatchPassword
       });
 
-      this.authenticationService.getUserData().subscribe(u => this.user = u);
+      this.authenticationService.getUserData().subscribe(u => {
+        this.user = u;
+        this.registerForm.patchValue({
+          username: u.userName,
+          email: u.email
+      });
+      this.loading = false;
+      });
 
     }
 
