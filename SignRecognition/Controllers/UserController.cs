@@ -33,9 +33,12 @@ namespace SignRecognition.Controllers
         public async Task<UserViewModel> Get()
         {
             var currentUser = await _userManager.GetUserAsync(User);
+
             return new UserViewModel()
             {
-                UserName = currentUser.UserName
+                UserName = currentUser.UserName,
+                // Send true if user is admin
+                AdminRights = (await _userManager.GetRolesAsync(currentUser)).Any(r => r == "Admin")
             };
         }
 

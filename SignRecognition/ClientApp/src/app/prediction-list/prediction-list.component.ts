@@ -19,10 +19,12 @@ export class PredictionListComponent implements OnInit {
   loading = true;
   page = 1;
 
-  user = true;
+  userPredictions = true;
 
   predCount: Number = null;
   userPredCount: Number = null;
+
+  private admin = false;
 
   constructor(private predictionService: PredictionService,
     private router: Router,
@@ -33,12 +35,14 @@ export class PredictionListComponent implements OnInit {
     this.getLocations();
     this.predictionService.getPredictionCount().subscribe(p => this.predCount = p);
     this.predictionService.getUserPredictionCount().subscribe(p => this.userPredCount = p);
+
+    this.admin = JSON.parse(localStorage.getItem('isAdmin'));
   }
 
   getLocations() {
     this.predictions = [];
     this.loading = true;
-    if (this.user) {
+    if (this.userPredictions) {
       this.predictionService.getUserPredictions()
       .subscribe(predictions => this.omg(predictions));
     } else {
@@ -57,17 +61,13 @@ export class PredictionListComponent implements OnInit {
       this.router.navigate(['/'], { queryParams: { lat: location.latitude, lng: location.longitude }});
   }
 
-  remove (location: IPrediction) {
-      this.http.post('/Location/Delete', location)
-      .pipe(
-        catchError(err => this.error(err)))
-      .subscribe(() => this.handleResponse(location) );
+  remove (prediction: IPrediction) {
+      this.predictionService.deletePrediction(prediction.id)
+      .subscribe(r => {
+        this.predictions.splice(this.predictions.indexOf(prediction), 1);
+        this.toastr.success('Prediction removed');
+      });
       event.stopPropagation();
-  }
-
-  handleResponse(location) {
-      this.predictions.splice(this.predictions.indexOf(location), 1);
-      this.toastr.success('Location removed');
   }
 
   error(err) {
@@ -77,13 +77,17 @@ export class PredictionListComponent implements OnInit {
 
   onScroll() {
     // this.toastr.warning('Scroll');
+    if (!this.predictions) {
+      return;
+    }
+
     this.loading = true;
     this.predictionService.getPredictions(this.page)
-    .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false;} );
+    .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false; } );
   }
 
   setUserPred(type: boolean) {
-    this.user = type;
+    this.userPredictions = type;
     this.getLocations();
   }
 

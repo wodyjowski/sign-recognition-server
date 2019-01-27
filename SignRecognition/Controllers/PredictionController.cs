@@ -117,16 +117,35 @@ namespace SignRecognition.Controllers
             return Ok();
         }
 
-        // PUT: api/Prediction/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                BadRequest();
+            }
+
+            Prediction prediction = _appDbContext.Find<Prediction>(id);
+
+            bool acceptDelete = (await _userManager.GetRolesAsync(user)).Any(r => r == "Admin") || prediction?.User == user;
+  
+
+            if (prediction != null && acceptDelete)
+            {
+                _appDbContext.Remove(prediction);
+                await _appDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }

@@ -36,6 +36,8 @@ export class AuthenticationService {
 
     private emitLogin(user) {
         localStorage.setItem('currentUserName', JSON.stringify(user.userName));
+        localStorage.setItem('isAdmin', JSON.stringify(user.adminRights));
+        
         this.getLoggedIn.emit(true);
         this.router.navigate([this.returnUrl]);
     }
@@ -57,6 +59,7 @@ export class AuthenticationService {
 
 }
 
-export interface User {
+interface User {
     userName: string;
+    adminRights: boolean;
 }

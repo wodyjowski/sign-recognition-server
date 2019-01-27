@@ -11,7 +11,7 @@ import { IPrediction } from '../_models/prediction';
   @Injectable()
   export class PredictionService {
 
-    predictionUrl = 'api/Prediction';
+    predictionUrl = 'api/Prediction/';
 
     constructor(
         private http: HttpClient) {
@@ -51,6 +51,10 @@ import { IPrediction } from '../_models/prediction';
 
     getUserPredictionCount() {
       return this.http.get<number>(this.predictionUrl + '/UPredCount');
+    }
+
+    deletePrediction(predId: string) {
+      return this.http.delete(this.predictionUrl + predId);
     }
 
   }
