@@ -23,15 +23,23 @@ export class AuthenticationService {
                     if (user && user.token) {
                         // store user details and jwt token in local storage to keep user logged in between page refreshes
                         localStorage.setItem('currentUser', JSON.stringify(user));
-                        this.getUser();
+                        this.getUserInfo();
                     }
 
                     return user;
                 }));
     }
 
-    private getUser() {
-        this.http.get<User>(`api/User`).subscribe(user => this.emitLogin(user));
+    private getUserInfo() {
+        this.getUser().subscribe(user => this.emitLogin(user));
+    }
+
+    public getUser() {
+        return this.http.get<User>(`api/User`);
+    }
+
+    public getUserData() {
+        return this.http.get<UserData>(`api/User/Data`);
     }
 
     private emitLogin(user) {
@@ -63,3 +71,10 @@ interface User {
     userName: string;
     adminRights: boolean;
 }
+
+export interface UserData {
+    userName: string;
+    email: string;
+    creationDate: Date;
+    adminRights: boolean;
+  }

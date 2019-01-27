@@ -91,10 +91,10 @@ class PasswordValidation {
        const password: string = AC.get('password').value; // to get value in input tag
        const confirmPassword: string = AC.get('cpassword').value; // to get value in input tag
         if (password !== confirmPassword) {
-            window.console.log('false');
+            // window.console.log('false');
             AC.get('cpassword').setErrors( {MatchPassword: true} );
         } else {
-            window.console.log('true');
+            // window.console.log('true');
             return null;
         }
     }

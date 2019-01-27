@@ -42,6 +42,20 @@ namespace SignRecognition.Controllers
             };
         }
 
+        [HttpGet("Data")]
+        public async Task<UserDataViewModel> GetData()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            return new UserDataViewModel()
+            {
+                UserName = currentUser.UserName,
+                CreationDate = currentUser.CreationDate,
+                Email = currentUser.Email,
+                AdminRights = (await _userManager.GetRolesAsync(currentUser)).Any(r => r == "Admin")
+            };
+        }
+
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]

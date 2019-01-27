@@ -18,6 +18,7 @@
     <span class="navbar-text">
 
       <a class="btn btn-info my-2 my-sm-0 nav-toggler userButton" *ngIf="!status"
+      [routerLink]='["account"]'
       href="javascript:;">{{ userName }}</a>
 
       <a class="btn btn-outline-success my-2 my-sm-0 nav-toggler"
