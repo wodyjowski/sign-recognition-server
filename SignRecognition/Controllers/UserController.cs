@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SignRecognition.Models;
 using SignRecognition.Models.DBContext;
+using SignRecognition.Models.FormModels;
 using SignRecognition.Models.ViewModels;
 
 namespace SignRecognition.Controllers
@@ -49,12 +50,66 @@ namespace SignRecognition.Controllers
 
             return new UserDataViewModel()
             {
+                Id = currentUser.Id,
                 UserName = currentUser.UserName,
                 CreationDate = currentUser.CreationDate,
                 Email = currentUser.Email,
                 AdminRights = (await _userManager.GetRolesAsync(currentUser)).Any(r => r == "Admin")
             };
         }
+
+
+        [HttpPost("UpdateEmail")]
+        public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailFormModel model)
+        {
+            var userToUpdate = _appDbContext.Find<User>(model.Id);
+
+            if (userToUpdate == null) return BadRequest();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (userToUpdate == currentUser || (await _userManager.GetRolesAsync(currentUser)).Any(r => r == "Admin"))
+            {
+                userToUpdate.Email = model.Email;
+                await _appDbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("UpdateEmailPassword")]
+        public async Task<IActionResult> UpdateEmailPassword([FromBody] UpdateEmailAndPasswordFormModel model)
+        {
+            var userToUpdate = _appDbContext.Find<User>(model.Id);
+
+            if (userToUpdate == null) return BadRequest();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (userToUpdate == currentUser || (await _userManager.GetRolesAsync(currentUser)).Any(r => r == "Admin"))
+            {
+                // retrieve token
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(userToUpdate);
+
+                // change password
+                var result = await _userManager.ResetPasswordAsync(userToUpdate, resetToken, model.Password);
+                userToUpdate.Email = model.Email;
+
+
+                await _appDbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
 
 
         // DELETE: api/ApiWithActions/5

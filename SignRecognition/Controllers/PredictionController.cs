@@ -37,7 +37,7 @@ namespace SignRecognition.Controllers
 
         // GET: api/Prediction
         [HttpGet, AllowAnonymous]
-        public async Task<IEnumerable<Prediction>> Get([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        public IEnumerable<Prediction> Get([FromQuery] int page = 0, [FromQuery] int amount = 20)
         {
             return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
         }

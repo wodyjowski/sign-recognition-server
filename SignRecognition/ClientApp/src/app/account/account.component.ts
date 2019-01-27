@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, UserData } from '../_services';
+import { catchError } from 'rxjs/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -12,23 +15,24 @@ import { AuthenticationService, UserData } from '../_services';
 
 export class AccountComponent implements OnInit {
 
-  registerForm: FormGroup;
+  dataForm: FormGroup;
   loading = true;
   submitted = false;
   returnUrl: string;
   error = '';
+
+  passwordChange = false;
 
   user: UserData;
 
 
     constructor(
       private formBuilder: FormBuilder,
-      private route: ActivatedRoute,
-      private router: Router,
-      private authenticationService: AuthenticationService) {}
+      private authenticationService: AuthenticationService,
+      private toastr: ToastrService) {}
 
     ngOnInit() {
-      this.registerForm = this.formBuilder.group({
+      this.dataForm = this.formBuilder.group({
         username: [{value: '', disabled: true}, Validators.compose([Validators.required, Validators.minLength(3)])],
         email: ['', Validators.compose([Validators.required, Validators.email])],
         password: ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -38,14 +42,54 @@ export class AccountComponent implements OnInit {
       });
 
       this.authenticationService.getUserData().subscribe(u => {
-        this.user = u;
-        this.registerForm.patchValue({
-          username: u.userName,
-          email: u.email
+      this.user = u;
+      this.dataForm.patchValue({
+        username: u.userName,
+        email: u.email
       });
       this.loading = false;
       });
 
+    }
+
+    passwordCheck() {
+      this.passwordChange = !this.passwordChange;
+    }
+
+    get f() { return this.dataForm.controls; }
+
+    onSubmit() {
+      this.submitted = true;
+
+      // stop here if form is invalid
+      if ( this.passwordChange  && this.dataForm.invalid) {
+            return;
+      } else if ( this.dataForm.get('username').invalid
+            || this.dataForm.get('email').invalid) {
+            return;
+      }
+
+        this.loading = true;
+        if (!this.passwordChange) {
+          this.authenticationService.updateEmail(this.user.id, this.f.email.value).pipe(catchError(err =>
+            this.saveError(err)
+          )).subscribe(a => this.saceSuccess());
+        } else {
+          this.authenticationService.updateEmailPassword(this.user.id, this.f.email.value, this.f.password.value).pipe(catchError(err =>
+            this.saveError(err)
+          )).subscribe(a => this.saceSuccess());
+        }
+    }
+
+    saveError(err) {
+      this.toastr.error('Changes could not be saved');
+      this.loading = false;
+      return err;
+    }
+
+    saceSuccess() {
+      this.toastr.success('Saved changes');
+      this.loading = false;
     }
 
 }

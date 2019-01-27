@@ -65,6 +65,13 @@ export class AuthenticationService {
         this.getRegistered.emit(true);
     }
 
+    updateEmail(userId: string, newEmail: string) {
+        return this.http.post('api/User/UpdateEmail', { Id: userId, Email: newEmail } );
+    }
+
+    updateEmailPassword(userId: string, newEmail: string, newPassword: string) {
+        return this.http.post('api/User/UpdateEmailPassword', { Id: userId, Email: newEmail, Password: newPassword } );
+    }
 }
 
 interface User {
@@ -73,6 +80,7 @@ interface User {
 }
 
 export interface UserData {
+    id: string;
     userName: string;
     email: string;
     creationDate: Date;
