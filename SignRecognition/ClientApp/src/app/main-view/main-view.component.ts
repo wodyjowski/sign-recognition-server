@@ -26,7 +26,6 @@ export class MainViewComponent implements OnInit {
   lat = 0;
   lng = 0;
   zoom = 2;
-  times;
   saveButton = false;
   fromParams = false;
   foundLocation = false;
@@ -41,14 +40,12 @@ export class MainViewComponent implements OnInit {
   constructor(private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone, private toastr: ToastrService,
     private predictionService: PredictionService,
-    private route: ActivatedRoute) {
-      this.times = SunCalc.getTimes(Date.now(), this.lat, this.lng);
-     }
+    private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.queryParams
     .subscribe(params => {
-      console.log(params);
+      // console.log(params);
       const lat = Number(params.lat);
       const lng = Number(params.lng);
       if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
@@ -106,9 +103,6 @@ export class MainViewComponent implements OnInit {
     this.lat = lat;
     this.lng = lon;
     this.zoom = 12;
-
-    window.console.log(this.times);
-
   }
 
   getLocation() {

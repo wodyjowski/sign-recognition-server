@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SignRecognition.Authentication;
 using SignRecognition.Models;
+using SignRecognition.Models.DatabaseSeed;
 using SignRecognition.Models.DBContext;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +51,7 @@ namespace SignRecognition
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            }).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 
@@ -82,7 +84,7 @@ namespace SignRecognition
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, UserManager<User> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -96,6 +98,9 @@ namespace SignRecognition
 
             // enable authorization - important
             app.UseAuthentication();
+            // seed admin user
+            ApplicationDbInitializer.SeedUsers(userManager, 
+                Configuration["AdminUser:Username"], Configuration["AdminUser:Email"], Configuration["AdminUser:Password"]);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

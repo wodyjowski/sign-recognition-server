@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SignRecognition.Models.DBContext;
 
 namespace SignRecognition.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190127143954_Admin-role")]
+    partial class Adminrole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,8 +45,7 @@ namespace SignRecognition.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "071bbd5c-b4b4-496e-9369-3f194f813092", ConcurrencyStamp = "c41f903c-2a31-4913-a705-b447df6205b8", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "ab03594b-682d-439f-9eca-a4712d9811b6", ConcurrencyStamp = "31e15396-854b-437a-b287-f2b7ff32f74e", Name = "User", NormalizedName = "USER" }
+                        new { Id = "2f2006a5-1834-4953-80c3-8ea1058f2109", ConcurrencyStamp = "d3afc2c7-4223-48d6-8f7f-6e5d93c7eb4f", Name = "Admin", NormalizedName = "ADMIN" }
                     );
                 });
 
