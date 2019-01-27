@@ -33,12 +33,14 @@ export class MainViewComponent implements OnInit {
 
   scalc: SunCalc;
 
+  predictions = [];
+
   @ViewChild('search')
   public searchElementRef: ElementRef;
 
   constructor(private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone, private toastr: ToastrService,
-    private locationService: PredictionService,
+    private predictionService: PredictionService,
     private route: ActivatedRoute) {
       this.times = SunCalc.getTimes(Date.now(), this.lat, this.lng);
      }
@@ -82,6 +84,12 @@ export class MainViewComponent implements OnInit {
       });
     });
   });
+
+
+    // get predictions
+    this.predictionService.getPredictions().subscribe(pred => this.predictions = pred);
+
+
   }
 
   mapReady(map) {

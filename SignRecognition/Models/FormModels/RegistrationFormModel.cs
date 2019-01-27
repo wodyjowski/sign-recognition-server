@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SignRecognition.Models.FormModels
 {
-    public class RegistrationViewModel
+    public class RegistrationFormModel
     {
         public string Login { get; set; }
         public string Password { get; set; }

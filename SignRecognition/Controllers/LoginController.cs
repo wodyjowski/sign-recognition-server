@@ -49,7 +49,7 @@ namespace SignRecognition.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> CreateUser([FromBody]RegistrationViewModel model)
+        public async Task<IActionResult> CreateUser([FromBody]RegistrationFormModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -74,7 +74,7 @@ namespace SignRecognition.Controllers
 
         [AllowAnonymous]
         [HttpPost("Authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody]CredentialsViewModel login)
+        public async Task<IActionResult> Authenticate([FromBody]CredentialsFormModel login)
         {
             IActionResult response = BadRequest("login failed");
             var user = await AuthenticateAsync(login);
@@ -88,7 +88,7 @@ namespace SignRecognition.Controllers
             return response;
         }
 
-        private async Task<User> AuthenticateAsync(CredentialsViewModel login)
+        private async Task<User> AuthenticateAsync(CredentialsFormModel login)
         {
             User user = await _userManager.FindByNameAsync(login.UserName);
 

@@ -10,9 +10,11 @@ namespace SignRecognition.Models
     {
         public string Id { get; set; }
         public DateTime CreationDate { get; set; }
+        public DateTime EditDate { get; set; }
         public User User { get; set; }
         public string Class { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public string FileName { get; set; }
     }
 }

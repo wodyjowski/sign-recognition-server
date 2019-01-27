@@ -19,20 +19,32 @@ export class PredictionListComponent implements OnInit {
   loading = true;
   page = 1;
 
-  constructor(private locationService: PredictionService,
+  user = true;
+
+  predCount: Number = null;
+  userPredCount: Number = null;
+
+  constructor(private predictionService: PredictionService,
     private router: Router,
     private http: HttpClient,
     private toastr: ToastrService) { }
 
   ngOnInit() {
     this.getLocations();
+    this.predictionService.getPredictionCount().subscribe(p => this.predCount = p);
+    this.predictionService.getUserPredictionCount().subscribe(p => this.userPredCount = p);
   }
 
   getLocations() {
     this.predictions = [];
     this.loading = true;
-    this.locationService.getPredictions()
-    .subscribe(predictions => this.omg(predictions));
+    if (this.user) {
+      this.predictionService.getUserPredictions()
+      .subscribe(predictions => this.omg(predictions));
+    } else {
+      this.predictionService.getPredictions()
+      .subscribe(predictions => this.omg(predictions));
+    }
   }
 
   omg (predictions) {
@@ -66,10 +78,14 @@ export class PredictionListComponent implements OnInit {
   onScroll() {
     // this.toastr.warning('Scroll');
     this.loading = true;
-    this.locationService.getPredictions(this.page)
+    this.predictionService.getPredictions(this.page)
     .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false;} );
   }
 
+  setUserPred(type: boolean) {
+    this.user = type;
+    this.getLocations();
+  }
 
 }
 

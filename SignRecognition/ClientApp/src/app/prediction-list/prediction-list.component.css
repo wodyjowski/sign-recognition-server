@@ -6,3 +6,16 @@
     border-radius: 50%;
     padding: 1px 6px;
 }
+
+.nav-tabs-predictions {
+    border-bottom: none;
+    margin-bottom: -1px;
+}
+
+.nav-tabs-predictions a {
+    color: black;
+}
+
+.no-pred-text {
+    margin-top: 50px;
+}

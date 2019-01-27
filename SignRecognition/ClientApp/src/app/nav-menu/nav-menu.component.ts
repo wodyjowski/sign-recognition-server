@@ -15,6 +15,8 @@ export class NavMenuComponent implements OnInit {
   isLoggedTittle = 'Login';
   status = true;
 
+  userName = null;
+
   infoMsg = '';
 
   constructor(private authenticationService: AuthenticationService,
@@ -29,6 +31,7 @@ export class NavMenuComponent implements OnInit {
     if (user) {
       this.isLoggedTittle = 'Logout';
       this.status = false;
+      this.getCurrenUserName();
       // window.console.log(user);
     }
   }
@@ -38,6 +41,7 @@ export class NavMenuComponent implements OnInit {
       this.isLoggedTittle = 'Logout';
       this.status = false;
       this.toastr.success('Logged in');
+      this.getCurrenUserName();
     } else {
       if (!this.status) {
         this.isLoggedTittle = 'Login';
@@ -59,6 +63,10 @@ export class NavMenuComponent implements OnInit {
 
   notifyRegister(registered) {
     this.toastr.success('Successfully registered');
+  }
+
+  private getCurrenUserName() {
+    this.userName = JSON.parse(localStorage.getItem('currentUserName'));
   }
 
 }

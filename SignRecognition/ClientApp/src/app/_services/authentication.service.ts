@@ -18,16 +18,22 @@ export class AuthenticationService {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     this.getLoggedIn.emit(true);
                     localStorage.setItem('currentUser', JSON.stringify(user));
+                    this.getUser();
                 }
 
                 return user;
             }));
     }
 
+    private getUser() {
+        this.http.get<User>(`api/User`).subscribe(user => localStorage.setItem('currentUserName', JSON.stringify(user.userName)));
+    }
+
     logout() {
         // remove user from local storage to log user out
         this.getLoggedIn.emit(false);
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUserName');
     }
 
     register(Login: string, Email: string, Password: string) {
@@ -38,4 +44,8 @@ export class AuthenticationService {
         this.getRegistered.emit(true);
     }
 
+}
+
+export interface User {
+    userName: string;
 }

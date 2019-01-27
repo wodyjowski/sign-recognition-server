@@ -10,6 +10,7 @@ namespace SignRecognition.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime CreationDate { get; set; }
+        public DateTime EditDate { get; set; }
         public ICollection<Prediction> Predictions { get; set; }
 
     }

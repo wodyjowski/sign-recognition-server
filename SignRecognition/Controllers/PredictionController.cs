@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,26 +28,71 @@ namespace SignRecognition.Controllers
         [HttpGet]
         public async Task<IEnumerable<Prediction>> Get([FromQuery] int page = 0, [FromQuery] int amount = 20)
         {
-            var user = await _userManager.GetUserAsync(User);
-            user = new User();
-
-            if (!ModelState.IsValid || user == null)
-            {
-                return null;
-            }
-
             return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
         }
 
-        [HttpGet("All")]
-        public async Task<IEnumerable<Prediction>> GetAll([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        [HttpGet("UAll")]
+        public async Task<IActionResult> GetUAll([FromQuery] int page = 0, [FromQuery] int amount = 20)
         {
-            return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
+            var user = await _userManager.GetUserAsync(User);
+            user = new User();
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user.Predictions);
+        }
+
+        [HttpGet("PredCount")]
+        public int PredCount()
+        {
+            return _appDbContext.Predictions.Count();
+        }
+
+        [HttpGet("UPredCount")]
+        public async Task<IActionResult> UserPredCount()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if(user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user.Predictions?.Count() ?? 0);
         }
 
         // POST: api/Prediction
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] LocationViewModel model)
+        public async Task<IActionResult> Post([FromBody] LocationFormModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            user = new User();
+
+            if (!ModelState.IsValid || model == null || user == null)
+            {
+                return BadRequest();
+            }
+
+            Prediction pred = new Prediction()
+            {
+                CreationDate = DateTime.Now,
+                User = null,
+                Class = model.Class,
+                Latitude = model.Latitude,
+                Longitude = model.Longitude
+            };
+            _appDbContext.Add(pred);
+
+            await _appDbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("Image")]
+        public async Task<IActionResult> PostImage([FromBody] LocationImageFormModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             user = new User();

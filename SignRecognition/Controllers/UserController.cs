@@ -2,43 +2,51 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SignRecognition.Authentication;
 using SignRecognition.Models;
 using SignRecognition.Models.DBContext;
-using SignRecognition.Models.FormModels;
+using SignRecognition.Models.ViewModels;
 
 namespace SignRecognition.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class LocationController : ControllerBase
+    public class UserController : ControllerBase
     {
+
         private readonly ApplicationDbContext _appDbContext;
         private readonly UserManager<User> _userManager;
-        public LocationController(UserManager<User> userManager, ApplicationDbContext appDbContext)
+        public UserController(UserManager<User> userManager, ApplicationDbContext appDbContext)
         {
             _userManager = userManager;
             _appDbContext = appDbContext;
         }
 
-        // GET: api/Location
+
+
+        // GET: api/User
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<UserViewModel> Get()
         {
-            return new string[] { "value1", "value2" };
+            var currentUser = await _userManager.GetUserAsync(User);
+            return new UserViewModel()
+            {
+                UserName = currentUser.UserName
+            };
         }
 
-        // POST: api/Location
+
+        // POST: api/User
         [HttpPost]
-        public void Post([FromBody] LocationFormModel model)
+        public void Post([FromBody] string value)
         {
-
         }
 
-        // PUT: api/Location/5
+        // PUT: api/User/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {

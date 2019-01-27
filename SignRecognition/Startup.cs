@@ -12,6 +12,7 @@ using SignRecognition.Authentication;
 using SignRecognition.Models;
 using SignRecognition.Models.DBContext;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SignRecognition
 {
@@ -65,6 +66,18 @@ namespace SignRecognition
                     ValidAudience = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    // Adding header if token expired
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
         }
 
@@ -80,6 +93,9 @@ namespace SignRecognition
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            // enable authorization - important
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

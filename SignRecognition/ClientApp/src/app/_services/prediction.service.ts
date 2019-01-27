@@ -38,4 +38,19 @@ import { IPrediction } from '../_models/prediction';
         }});
     }
 
+    getUserPredictions(pageNum: number = 0): Observable<any[]> {
+      return this.http.get<IPrediction[]>(this.predictionUrl + '/UAll', {
+        params: {
+          page: pageNum.toString()
+        }});
+    }
+
+    getPredictionCount() {
+      return this.http.get<number>(this.predictionUrl + '/PredCount');
+    }
+
+    getUserPredictionCount() {
+      return this.http.get<number>(this.predictionUrl + '/UPredCount');
+    }
+
   }

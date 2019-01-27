@@ -1,8 +1,18 @@
 <h2 class="prediction-header loc-container">Saved predictions <button class="btn btn-secondary btn-refresh" (click)="getLocations()"><i class="fa fa-refresh" aria-hidden="true"> </i></button></h2>
 
-<h1 *ngIf="predictions?.length < 1 && !loading">No saved predictions.</h1>
 
 
+
+<ul class="nav nav-tabs nav-tabs-predictions">
+  <li class="nav-item">
+    <a class="nav-link" href="javascript:;" [ngClass]="user ? 'active' : ''" (click)="setUserPred(true)">My predictions <span class="badge badge-secondary"> {{ userPredCount ? userPredCount : '-' }} </span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="javascript:;" [ngClass]="!user ? 'active' : ''" (click)="setUserPred(false)">All predictions <span class="badge badge-secondary"> {{ predCount ? predCount : '-' }} </span></a>
+  </li>
+</ul>
+
+<h1 *ngIf="predictions?.length < 1 && !loading" class="no-pred-text">No saved predictions.</h1>
 
 <div class="list-group loc-container" 
 infiniteScroll
@@ -15,7 +25,7 @@ infiniteScroll
         <a>{{ prediction.latitude }} {{ prediction.longitude }}</a>
         <p><a href="javascript:;" class="badge badge-danger" (click)="remove(prediction)">Remove</a></p>
       </div>
-      <small>Created: {{ prediction.creationDate | date:'dd-MM-yyyy HH:mm' }}</small>
+      <small>Created: {{ prediction.creationDate | date:'dd.MM.yyyy HH:mm' }}</small>
     </a>
 </div>
 

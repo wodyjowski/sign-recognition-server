@@ -10,4 +10,8 @@
 
 
 <agm-map [latitude]="lat" [longitude]="lng" [zoom] = "zoom" (mapReady)="mapReady($event)">
+  <div *ngFor="let prediction of predictions">
+    <agm-marker [latitude]="prediction.latitude" [longitude]="prediction.longitude" [label]="prediction.class">
+      </agm-marker>
+  </div>
 </agm-map>

@@ -16,9 +16,14 @@
       </li> -->
     </ul>
     <span class="navbar-text">
+
+      <a class="btn btn-info my-2 my-sm-0 nav-toggler userButton" *ngIf="!status"
+      href="javascript:;">{{ userName }}</a>
+
       <a class="btn btn-outline-success my-2 my-sm-0 nav-toggler"
       [ngClass]="status ? 'btn-outline-success' : 'btn-outline-danger'"
       href="javascript:;" (click)="loginClick()">{{ isLoggedTittle }}</a>
+
     </span>
   </div>
 </nav>
