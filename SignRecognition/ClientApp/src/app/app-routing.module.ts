@@ -9,13 +9,15 @@ import { PredictionListComponent } from './prediction-list/prediction-list.compo
 
 import { AuthGuard } from './_guards';
 import { AccountComponent } from './account/account.component';
+import { UserListComponent } from './user-list/user-list.component';
 
 const routes: Routes = [
   { path: '', component: MainViewComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
   { path: 'register', component: RegisterComponent},
   { path: 'predictionlist', component: PredictionListComponent, canActivate: [AuthGuard]},
-  { path: 'account', component: AccountComponent, canActivate: [AuthGuard]}
+  { path: 'account', component: AccountComponent, canActivate: [AuthGuard]},
+  { path: 'users', component: UserListComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({

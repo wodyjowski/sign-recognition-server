@@ -1,0 +1,25 @@
+<h2 class="user-header loc-container">Registered users
+  <button class="btn btn-secondary btn-refresh" (click)="refresh()">
+      <fa name="refresh"></fa></button></h2>
+
+<h1 *ngIf="users?.length < 1 && !loading" class="no-usr-text">No users.</h1>
+
+<div class="list-group loc-container" 
+infiniteScroll
+[infiniteScrollDistance]="1"
+[infiniteScrollThrottle]="250"
+(scrolled)="onScroll()">
+    <a class="list-group-item list-group-item-action flex-column align-items-start" *ngFor="let user of users" (click)="navigate(user)">
+      <div class="d-flex w-100 justify-content-between">
+        <h3 class="mb-1">{{ user.class }}</h3>
+      </div>
+      <div class="user-content">
+        <h5 class="mb-1 font-weight-normal">Username: <b>{{ user.userName }}</b></h5>
+        <p class="mb-1">Email: <b>{{ user.email }}</b></p>
+        <p class="mb-1">Admin rights: <b>{{ user.adminRights ? 'Yes' : 'No' }}</b></p>
+      </div>
+      <small>Created: <b>{{ user.creationDate | date:'dd.MM.yyyy HH:mm' }}</b></small>
+    </a>
+</div>
+
+<div class="animation-wrapper"><div *ngIf="loading" class="lds-dual-ring load-element"></div></div>

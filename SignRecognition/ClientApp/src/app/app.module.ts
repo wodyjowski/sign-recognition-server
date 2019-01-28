@@ -35,6 +35,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { AccountComponent } from './account/account.component';
+import { UserListComponent } from './user-list/user-list.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { AccountComponent } from './account/account.component';
     PredictionListComponent,
     ImageListComponent,
     ImageUploadComponent,
-    AccountComponent
+    AccountComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import { AuthenticationService, UserData } from '../_services';
 import { catchError } from 'rxjs/operators';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from '../_services/user.service';
 
 
 @Component({
@@ -24,14 +25,20 @@ export class AccountComponent implements OnInit {
   passwordChange = false;
 
   user: UserData;
+  isAdmin = false;
 
 
     constructor(
       private formBuilder: FormBuilder,
       private authenticationService: AuthenticationService,
-      private toastr: ToastrService) {}
+      private toastr: ToastrService,
+      private route: ActivatedRoute,
+      private userService: UserService) {}
 
     ngOnInit() {
+
+      this.isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
+
       this.dataForm = this.formBuilder.group({
         username: [{value: '', disabled: true}, Validators.compose([Validators.required, Validators.minLength(3)])],
         email: ['', Validators.compose([Validators.required, Validators.email])],
@@ -41,15 +48,30 @@ export class AccountComponent implements OnInit {
         validator: PasswordValidation.MatchPassword
       });
 
-      this.authenticationService.getUserData().subscribe(u => {
+      this.route.queryParams
+      .subscribe(params => {
+        // console.log(params);
+        const id = params.id;
+        if (id && this.isAdmin) {
+          this.userService.getUserById(id).subscribe(u => {
+            this.setUser(u);
+          });
+        } else {
+
+          this.authenticationService.getUserData().subscribe(u => {
+            this.setUser(u);
+          });
+        }
+      });
+    }
+
+    setUser(u: UserData) {
       this.user = u;
       this.dataForm.patchValue({
         username: u.userName,
         email: u.email
       });
       this.loading = false;
-      });
-
     }
 
     passwordCheck() {

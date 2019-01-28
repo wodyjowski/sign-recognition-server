@@ -18,6 +18,7 @@ export class NavMenuComponent implements OnInit {
   userName = null;
 
   infoMsg = '';
+  isAdmin = false;
 
   constructor(private authenticationService: AuthenticationService,
     private toastr: ToastrService,
@@ -33,7 +34,13 @@ export class NavMenuComponent implements OnInit {
       this.status = false;
       this.getCurrenUserName();
       // window.console.log(user);
+      this.checkAdmin();
     }
+  }
+
+  private checkAdmin() {
+    const admin = JSON.parse(localStorage.getItem('isAdmin'));
+    this.isAdmin = admin;
   }
 
   private changeTitle(logged: boolean): void {
@@ -42,6 +49,7 @@ export class NavMenuComponent implements OnInit {
       this.status = false;
       this.toastr.success('Logged in');
       this.getCurrenUserName();
+      this.checkAdmin();
     } else {
       if (!this.status) {
         this.isLoggedTittle = 'Login';

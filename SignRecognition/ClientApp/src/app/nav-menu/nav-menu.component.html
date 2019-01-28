@@ -11,13 +11,13 @@
       <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }' *ngIf="!status">
         <a class="nav-link" href="javascript:;" [routerLink]='["predictionlist"]'>Recognised signs</a>
       </li>
-      <!-- <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }' *ngIf="!status">
-        <a class="nav-link" href="javascript:;" [routerLink]='[""]'>Sign locations</a>
-      </li> -->
+      <li class="nav-item nav-toggler" [routerLinkActive]='["active"]' [routerLinkActiveOptions]='{ exact: true }' *ngIf="isAdmin">
+        <a class="nav-link" href="javascript:;" [routerLink]='["users"]'>User list</a>
+      </li>
     </ul>
     <span class="navbar-text">
 
-      <a class="btn btn-info my-2 my-sm-0 nav-toggler userButton" *ngIf="!status"
+      <a class="btn btn-info my-2 my-sm-0 userButton nav-toggler" *ngIf="!status"
       [routerLink]='["account"]'
       href="javascript:;">{{ userName }}</a>
 

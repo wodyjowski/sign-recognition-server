@@ -36,10 +36,7 @@ export class PredictionListComponent implements OnInit {
     this.predictionService.getPredictionCount().subscribe(p => this.predCount = p);
     this.predictionService.getUserPredictionCount().subscribe(p => this.userPredCount = p);
 
-    const admin = JSON.parse(localStorage.getItem('isAdmin'));
-    if (admin) {
-      this.admin = admin;
-    }
+    this.admin = JSON.parse(localStorage.getItem('isAdmin'));
   }
 
   getLocations() {
@@ -47,14 +44,14 @@ export class PredictionListComponent implements OnInit {
     this.loading = true;
     if (this.userPredictions) {
       this.predictionService.getUserPredictions()
-      .subscribe(predictions => this.omg(predictions));
+      .subscribe(predictions => this.stopLoading(predictions));
     } else {
       this.predictionService.getPredictions()
-      .subscribe(predictions => this.omg(predictions));
+      .subscribe(predictions => this.stopLoading(predictions));
     }
   }
 
-  omg (predictions) {
+  stopLoading (predictions) {
     this.predictions = predictions;
     // window.console.log(predictions);
     this.loading = false;
@@ -85,8 +82,13 @@ export class PredictionListComponent implements OnInit {
     }
 
     this.loading = true;
-    this.predictionService.getPredictions(this.page)
-    .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false; } );
+    if (this.userPredictions) {
+    this.predictionService.getUserPredictions(this.page)
+      .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false; } );
+    } else {
+      this.predictionService.getPredictions(this.page)
+       .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false; } );
+    }
   }
 
   setUserPred(type: boolean) {

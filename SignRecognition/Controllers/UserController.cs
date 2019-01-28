@@ -110,6 +110,51 @@ namespace SignRecognition.Controllers
             }
         }
 
+        [HttpGet("AllUsers"), Authorize] // (Roles = "Admin")
+        public async Task<IEnumerable<UserDataViewModel>> GetAllUsers([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        {
+            var users = _appDbContext.Users.OrderByDescending(u => u.CreationDate).Skip(amount * page).Take(amount);
+            List<UserDataViewModel> userList = new List<UserDataViewModel>();
+
+            foreach (var user in users)
+            {
+                var adminRights = (await _userManager.GetRolesAsync(user)).Any(r => r == "Admin");
+                userList.Add(new UserDataViewModel()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    CreationDate = user.CreationDate,
+                    AdminRights = adminRights
+                });
+            }
+
+            return userList;
+        }
+
+
+        [HttpGet("{id}"), Authorize] // (Roles = "Admin")
+        public async Task<UserDataViewModel> GetUserById(string id)
+        {
+            var user = _appDbContext.Find<User>(id);
+            if (user != null)
+            {
+                var adminRights = (await _userManager.GetRolesAsync(user)).Any(r => r == "Admin");
+                return new UserDataViewModel()
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    CreationDate = user.CreationDate,
+                    AdminRights = adminRights
+                };
+            }
+            else
+            {
+                return null;
+            }
+       
+        }
 
 
         // DELETE: api/ApiWithActions/5

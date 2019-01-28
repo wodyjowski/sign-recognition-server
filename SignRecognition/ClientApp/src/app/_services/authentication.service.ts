@@ -15,6 +15,9 @@ export class AuthenticationService {
     constructor(private http: HttpClient,
         private router: Router) { }
 
+    user: User;
+
+
     login(Username: string, Password: string, returnUrl: string) {
         this.returnUrl = returnUrl;
         return this.http.post<any>(`api/Login/Authenticate`, { Username, Password })
@@ -42,9 +45,13 @@ export class AuthenticationService {
         return this.http.get<UserData>(`api/User/Data`);
     }
 
-    private emitLogin(user) {
+    private emitLogin(user: User) {
+        this.user = user;
         localStorage.setItem('currentUserName', JSON.stringify(user.userName));
-        localStorage.setItem('isAdmin', JSON.stringify(user.adminRights));
+
+        if (user.adminRights) {
+            localStorage.setItem('isAdmin', JSON.stringify(user.adminRights));
+        }
 
         this.getLoggedIn.emit(true);
         this.router.navigate([this.returnUrl]);
@@ -55,6 +62,7 @@ export class AuthenticationService {
         this.getLoggedIn.emit(false);
         localStorage.removeItem('currentUser');
         localStorage.removeItem('currentUserName');
+        localStorage.removeItem('isAdmin');
     }
 
     register(Login: string, Email: string, Password: string) {
