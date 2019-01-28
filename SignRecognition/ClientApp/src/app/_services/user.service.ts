@@ -7,16 +7,25 @@ import { UserData } from '.';
 export class UserService {
     constructor(private http: HttpClient) { }
 
-    getAll(pageNum: number) {
+    getAll(pageNum: number, searchUsername: string) {
         return this.http.get<UserListData[]>(`api/User/AllUsers`,
         { params: {
-            page: pageNum.toString()
+            page: pageNum.toString(),
+            username: searchUsername
         }});
     }
 
 
     getUserById(userId: string) {
         return this.http.get<UserData>(`api/User/` + userId);
+    }
+
+    deleteUser(userId: string) {
+        return this.http.delete('api/User/' + userId);
+    }
+
+    grantAdmin(userId: string) {
+        return this.http.post('api/User/GrantAdmin/' + userId, null);
     }
 }
 

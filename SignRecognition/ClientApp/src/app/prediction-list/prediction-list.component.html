@@ -1,8 +1,14 @@
 <h2 class="prediction-header loc-container">Saved predictions
-  <button class="btn btn-secondary btn-refresh" (click)="getLocations()">
+  <button class="btn btn-secondary btn-refresh" (click)="refresh()">
       <fa name="refresh"></fa></button></h2>
 
 
+<div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="Search for location" [(ngModel)]="searchLocation" (keydown.enter)="search()">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="search()">Search</button>
+  </div>
+</div>      
 
 
 <ul class="nav nav-tabs nav-tabs-predictions">

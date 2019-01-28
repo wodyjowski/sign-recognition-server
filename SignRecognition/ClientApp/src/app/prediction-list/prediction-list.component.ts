@@ -26,6 +26,8 @@ export class PredictionListComponent implements OnInit {
 
   private admin = false;
 
+  searchLocation: string;
+
   constructor(private predictionService: PredictionService,
     private router: Router,
     private http: HttpClient,
@@ -33,22 +35,28 @@ export class PredictionListComponent implements OnInit {
 
   ngOnInit() {
     this.getLocations();
-    this.predictionService.getPredictionCount().subscribe(p => this.predCount = p);
-    this.predictionService.getUserPredictionCount().subscribe(p => this.userPredCount = p);
-
+    this.refreshCount();
     this.admin = JSON.parse(localStorage.getItem('isAdmin'));
   }
 
-  getLocations() {
+  refreshCount(location: string = null) {
+    this.predictionService.getPredictionCount(location).subscribe(p => this.predCount = p);
+    this.predictionService.getUserPredictionCount(location).subscribe(p => this.userPredCount = p);
+  }
+
+  refresh() {
+    this.searchLocation = null;
+    this.refreshCount();
+    this.getLocations();
+  }
+
+  getLocations(location: string = null) {
     this.predictions = [];
     this.loading = true;
-    if (this.userPredictions) {
-      this.predictionService.getUserPredictions()
-      .subscribe(predictions => this.stopLoading(predictions));
-    } else {
-      this.predictionService.getPredictions()
-      .subscribe(predictions => this.stopLoading(predictions));
-    }
+
+    this.predictionService.getPredictions(0, this.userPredictions, location)
+    .subscribe(predictions => this.stopLoading(predictions));
+
   }
 
   stopLoading (predictions) {
@@ -82,18 +90,22 @@ export class PredictionListComponent implements OnInit {
     }
 
     this.loading = true;
-    if (this.userPredictions) {
-    this.predictionService.getUserPredictions(this.page)
+
+    this.predictionService.getPredictions(this.page, this.userPredictions, this.searchLocation)
       .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false; } );
-    } else {
-      this.predictionService.getPredictions(this.page)
-       .subscribe(predictions => { this.predictions =  this.predictions.concat(predictions); ++this.page; this.loading = false; } );
-    }
+
   }
 
   setUserPred(type: boolean) {
     this.userPredictions = type;
+    this.searchLocation = null;
+    this.refreshCount(this.searchLocation);
     this.getLocations();
+  }
+
+  search() {
+    this.refreshCount(this.searchLocation);
+    this.getLocations(this.searchLocation);
   }
 
 }

@@ -33,7 +33,8 @@ export class AccountComponent implements OnInit {
       private authenticationService: AuthenticationService,
       private toastr: ToastrService,
       private route: ActivatedRoute,
-      private userService: UserService) {}
+      private userService: UserService,
+      private router: Router) {}
 
     ngOnInit() {
 
@@ -112,6 +113,19 @@ export class AccountComponent implements OnInit {
     saceSuccess() {
       this.toastr.success('Saved changes');
       this.loading = false;
+    }
+
+    deleteUser(user: UserData) {
+      this.userService.deleteUser(user.id).subscribe(u => {
+        this.toastr.success('User deleted');
+        this.router.navigate(['users']);
+      });
+    }
+
+    grantAdmin(user: UserData) {
+      this.userService.grantAdmin(user.id).subscribe(r => {
+        this.toastr.success('Admin Granted');
+      });
     }
 
 }

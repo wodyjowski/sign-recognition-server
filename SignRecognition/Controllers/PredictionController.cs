@@ -37,13 +37,20 @@ namespace SignRecognition.Controllers
 
         // GET: api/Prediction
         [HttpGet, AllowAnonymous]
-        public IEnumerable<Prediction> Get([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        public IEnumerable<Prediction> Get([FromQuery] int page = 0, [FromQuery] int amount = 20, [FromQuery] string locationName = null)
         {
-            return _appDbContext.Predictions.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
+            var pred = _appDbContext.Predictions.AsQueryable();
+
+            if (locationName != null)
+            {
+                pred = pred.Where(p => p.LocationName.Contains(locationName));
+            }
+
+            return pred.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount);
         }
 
         [HttpGet("UAll")]
-        public async Task<IActionResult> GetUAll([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        public async Task<IActionResult> GetUAll([FromQuery] int page = 0, [FromQuery] int amount = 20, [FromQuery] string locationName = null)
         {
             var user = await _userManager.GetUserAsync(User);
             user = new User();
@@ -53,17 +60,31 @@ namespace SignRecognition.Controllers
                 return BadRequest();
             }
 
-            return Ok(user.Predictions);
+            var pred = user.Predictions?.AsQueryable();
+
+            if (pred != null && locationName != null)
+            {
+                pred = pred.Where(p => p.LocationName.Contains(locationName));
+            }
+
+            return Ok(pred);
         }
 
         [HttpGet("PredCount"), AllowAnonymous]
-        public int PredCount()
+        public int PredCount([FromQuery] string locationName = null)
         {
-            return _appDbContext.Predictions.Count();
+            var pred = _appDbContext.Predictions.AsQueryable();
+
+            if(locationName != null)
+            {
+                pred = pred.Where(p => p.LocationName.Contains(locationName));
+            }
+
+            return pred.Count();
         }
 
         [HttpGet("UPredCount")]
-        public async Task<IActionResult> UserPredCount()
+        public async Task<IActionResult> UserPredCount([FromQuery] string locationName = null)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -72,7 +93,14 @@ namespace SignRecognition.Controllers
                 return BadRequest();
             }
 
-            return Ok(user.Predictions?.Count() ?? 0);
+            var pred = user.Predictions?.AsQueryable();
+
+            if (pred != null && locationName != null)
+            {
+                pred = pred.Where(p => p.LocationName.Contains(locationName));
+            }
+
+            return Ok(pred?.Count() ?? 0);
         }
 
         // POST: api/Prediction

@@ -81,9 +81,11 @@ namespace SignRecognition.Controllers
             IActionResult response = BadRequest("login failed");
             var user = await AuthenticateAsync(login);
 
+            var roles = await _userManager.GetRolesAsync(user);
+
             if (user != null)
             {
-                var tokenString = _jwtFactory.GenerateEncodedToken(user);
+                var tokenString = _jwtFactory.GenerateEncodedToken(user, roles);
                 response = Ok(new { token = tokenString });
             }
 

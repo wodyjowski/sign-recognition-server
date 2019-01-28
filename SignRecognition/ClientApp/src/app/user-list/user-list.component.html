@@ -2,6 +2,13 @@
   <button class="btn btn-secondary btn-refresh" (click)="refresh()">
       <fa name="refresh"></fa></button></h2>
 
+<div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="Search for username" [(ngModel)]="searchUsername" (keydown.enter)="search()">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="search()">Search</button>
+  </div>
+</div>
+
 <h1 *ngIf="users?.length < 1 && !loading" class="no-usr-text">No users.</h1>
 
 <div class="list-group loc-container" 

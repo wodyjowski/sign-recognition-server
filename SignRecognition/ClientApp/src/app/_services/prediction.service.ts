@@ -31,26 +31,45 @@ import { IPrediction } from '../_models/prediction';
       });
     }
 
-    getPredictions(pageNum: number = 0): Observable<any[]> {
-      return this.http.get<IPrediction[]>(this.predictionUrl, {
-        params: {
-          page: pageNum.toString()
-        }});
+    getPredictions(pageNum: number = 0, allUsers: boolean = false, searchLocation: string = null): Observable<IPrediction[]> {
+
+      let params = new HttpParams();
+      params = params.append('page', pageNum.toString());
+      let url = this.predictionUrl;
+
+      if (allUsers) {
+        url += '/UAll';
+      }
+
+      if (searchLocation && searchLocation !== '') {
+        params = params.append('locationName', searchLocation);
+      }
+
+      return this.http.get<IPrediction[]>(url,
+        {params: params} );
     }
 
-    getUserPredictions(pageNum: number = 0): Observable<any[]> {
-      return this.http.get<IPrediction[]>(this.predictionUrl + '/UAll', {
-        params: {
-          page: pageNum.toString()
-        }});
+
+    getPredictionCount(location: string = null) {
+
+      let url = this.predictionUrl + '/PredCount?locationName=';
+
+      if (location) {
+        url += location;
+      }
+
+      return this.http.get<number>(url);
     }
 
-    getPredictionCount() {
-      return this.http.get<number>(this.predictionUrl + '/PredCount');
-    }
+    getUserPredictionCount(location: string = null) {
 
-    getUserPredictionCount() {
-      return this.http.get<number>(this.predictionUrl + '/UPredCount');
+      let url = this.predictionUrl + '/UPredCount?locationName=';
+
+      if (location) {
+        url += location;
+      }
+
+      return this.http.get<number>(url);
     }
 
     deletePrediction(predId: string) {

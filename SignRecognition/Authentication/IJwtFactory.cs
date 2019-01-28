@@ -8,6 +8,6 @@ namespace SignRecognition.Authentication
 {
     public interface IJwtFactory
     {
-        string GenerateEncodedToken(User user);
+        string GenerateEncodedToken(User user, IList<string> roles);
     }
 }

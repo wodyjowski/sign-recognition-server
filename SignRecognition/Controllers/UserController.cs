@@ -110,10 +110,18 @@ namespace SignRecognition.Controllers
             }
         }
 
-        [HttpGet("AllUsers"), Authorize] // (Roles = "Admin")
-        public async Task<IEnumerable<UserDataViewModel>> GetAllUsers([FromQuery] int page = 0, [FromQuery] int amount = 20)
+        [HttpGet("AllUsers"), Authorize(Roles = "Admin")]
+        public async Task<IEnumerable<UserDataViewModel>> GetAllUsers([FromQuery] int page = 0, [FromQuery] int amount = 20, [FromQuery] string username = null)
         {
-            var users = _appDbContext.Users.OrderByDescending(u => u.CreationDate).Skip(amount * page).Take(amount);
+            IQueryable<User> users = _appDbContext.Users;
+
+            if (username != null)
+            {
+                users = users.Where(u => u.UserName.Contains(username));
+            }
+
+           users = users.OrderByDescending(u => u.CreationDate).Skip(amount * page).Take(amount);
+
             List<UserDataViewModel> userList = new List<UserDataViewModel>();
 
             foreach (var user in users)
@@ -133,7 +141,7 @@ namespace SignRecognition.Controllers
         }
 
 
-        [HttpGet("{id}"), Authorize] // (Roles = "Admin")
+        [HttpGet("{id}"), Authorize(Roles = "Admin")]
         public async Task<UserDataViewModel> GetUserById(string id)
         {
             var user = _appDbContext.Find<User>(id);
@@ -153,14 +161,48 @@ namespace SignRecognition.Controllers
             {
                 return null;
             }
-       
+
         }
 
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id)
         {
+            var user = _appDbContext.Find<User>(id);
+
+            if (user == null) return BadRequest();
+
+            var adminRights = (await _userManager.GetRolesAsync(user)).Any(r => r == "Admin");
+
+            if (!adminRights)
+            {
+                _appDbContext.Remove(user);
+                _appDbContext.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("GrantAdmin/{id}")]
+        public async Task<IActionResult> GrandAdmin(string id)
+        {
+            var user = _appDbContext.Find<User>(id);
+            if(user != null)
+            {
+                var adminRights = (await _userManager.GetRolesAsync(user)).Any(r => r == "Admin");
+
+                if (!adminRights)
+                {
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }

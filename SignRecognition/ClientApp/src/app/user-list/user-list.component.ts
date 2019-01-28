@@ -18,11 +18,15 @@ export class UserListComponent implements OnInit {
   loading = false;
   page = 1;
 
+  searchMode = false;
+  searchUsername: string;
+
   ngOnInit() {
       this.getUsers(0);
   }
 
   refresh() {
+    this.searchUsername = null;
     this.users = null;
     this.getUsers(0);
   }
@@ -31,14 +35,18 @@ export class UserListComponent implements OnInit {
     if (!this.users) {
       return;
     }
-    this.getUsers(++this.page);
+
+    if (this.searchMode) {
+      this.getUsers(++this.page, this.searchUsername);
+    } else {
+      this.getUsers(++this.page);
+    }
   }
 
 
-  getUsers(page: number) {
-    this.loading = true;
-
-      this.userService.getAll(page).subscribe(u => {
+  getUsers(page: number, username: string = '') {
+      this.loading = true;
+      this.userService.getAll(page, username).subscribe(u => {
         if (this.users) {
           this.users.concat(u);
         } else  if (u) {
@@ -51,6 +59,12 @@ export class UserListComponent implements OnInit {
 
   navigate(user: UserListData) {
     this.router.navigate(['account'], { queryParams: { id: user.id }});
+  }
+
+  search() {
+    this.searchMode = true;
+    this.users = null;
+    this.getUsers(0, this.searchUsername);
   }
 
 }
