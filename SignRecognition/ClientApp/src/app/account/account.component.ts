@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, UserData } from '../_services';
-import { catchError } from 'rxjs/operators';
+import { catchError, first } from 'rxjs/operators';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../_services/user.service';
@@ -26,6 +26,8 @@ export class AccountComponent implements OnInit {
 
   user: UserData;
   isAdmin = false;
+
+  tokens: Token[];
 
 
     constructor(
@@ -72,6 +74,7 @@ export class AccountComponent implements OnInit {
         username: u.userName,
         email: u.email
       });
+      this.getAppTokens();
       this.loading = false;
     }
 
@@ -128,6 +131,29 @@ export class AccountComponent implements OnInit {
       });
     }
 
+    getAppTokens() {
+      this.userService.getTokens(this.user.id).subscribe(t => this.tokens = t);
+    }
+
+    refresh() {
+      this.tokens = [];
+      this.getAppTokens();
+    }
+
+    remove(token: Token) {
+
+
+      this.userService.removeToken(token.id).pipe(first())
+      .subscribe(
+        data => {
+            this.tokens.splice(this.tokens.indexOf(token), 1);
+            this.toastr.success('Token removed');
+              },
+        error => {
+                this.toastr.error('Token removal error');
+              });
+    }
+
 }
 
 class PasswordValidation {
@@ -143,3 +169,10 @@ class PasswordValidation {
       }
   }
 }
+
+export interface Token {
+  id: string;
+  name: string;
+  creationDate: Date;
+}
+

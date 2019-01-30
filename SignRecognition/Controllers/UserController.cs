@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SignRecognition.Models;
 using SignRecognition.Models.DBContext;
 using SignRecognition.Models.FormModels;
@@ -34,6 +35,8 @@ namespace SignRecognition.Controllers
         public async Task<UserViewModel> Get()
         {
             var currentUser = await _userManager.GetUserAsync(User);
+
+            var asd = (await _userManager.GetRolesAsync(currentUser)).Any(r => r == "Admin");
 
             return new UserViewModel()
             {
@@ -177,6 +180,20 @@ namespace SignRecognition.Controllers
 
             if (!adminRights)
             {
+                var tokens = _appDbContext.AppTokens.Where(t => t.User == user);
+                var predictions = _appDbContext.Predictions.Where(p => p.User == user);
+
+                foreach (var p in predictions)
+                {
+                    _appDbContext.Remove(p);
+                }
+
+                foreach (var token in tokens)
+                {
+                    _appDbContext.Remove(token);
+                }
+
+
                 _appDbContext.Remove(user);
                 _appDbContext.SaveChanges();
             }
@@ -204,5 +221,20 @@ namespace SignRecognition.Controllers
 
             return Ok();
         }
+
+        [HttpGet("GetByToken/{tokenId}"), AllowAnonymous]
+        public IActionResult UserFromToken(string tokenId)
+        {
+            if (!ModelState.IsValid || tokenId == null) return BadRequest();
+
+            var checkToken = _appDbContext.AppTokens.Where(t => t.Id == tokenId).Include(t => t.User).FirstOrDefault();
+
+            var user = checkToken?.User;
+
+            if (user == null) return BadRequest();
+
+            return Ok(user.UserName);
+        }
+
     }
 }

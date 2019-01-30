@@ -14,6 +14,7 @@ namespace SignRecognition.Models.DBContext
         public new DbSet<User> Users { get; set; }
         public DbSet<Prediction> Predictions { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<AppToken> AppTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

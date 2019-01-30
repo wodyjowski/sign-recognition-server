@@ -29,6 +29,7 @@ export class MainViewComponent implements OnInit {
   saveButton = false;
   fromParams = false;
   foundLocation = false;
+  id = null;
 
   scalc: SunCalc;
 
@@ -46,47 +47,58 @@ export class MainViewComponent implements OnInit {
     this.route.queryParams
     .subscribe(params => {
       // console.log(params);
-      const lat = Number(params.lat);
-      const lng = Number(params.lng);
-      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
-        this.lat = lat;
-        this.lng = lng;
+      const id = params.id;
+      if (id) {
+        this.id = id;
         this.fromParams = true;
-        this.showPosition(this.lat, this.lng);
+        this.loadPrediction(id);
       }
     });
 
 
-  // load Places Autocomplete
-  this.mapsAPILoader.load().then(() => {
-    const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
-    autocomplete.addListener('place_changed', () => {
-      this.ngZone.run(() => {
-        // get the place result
-        const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+    // load Places Autocomplete
+    this.mapsAPILoader.load().then(() => {
+      const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          // get the place result
+          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-        // verify result
-        if (place.geometry === undefined || place.geometry === null) {
-          return;
-        }
+          // verify result
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          }
 
-        // set latitude, longitude and zoom
-        this.showPosition(place.geometry.location.lat(), place.geometry.location.lng());
+          // set latitude, longitude and zoom
+          this.showPosition(place.geometry.location.lat(), place.geometry.location.lng());
 
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        if (user) {
-          this.saveButton = true;
-          this.palce = place;
-        }
+          const user = JSON.parse(localStorage.getItem('currentUser'));
+          if (user) {
+            this.saveButton = true;
+            this.palce = place;
+          }
+        });
       });
     });
-  });
+    if (!this.fromParams) {
+      // get predictions
+      this.loadAllPredictions();
+    }
+  }
 
-
-    // get predictions
+  loadAllPredictions() {
     this.predictionService.getPredictions().subscribe(pred => this.predictions = pred);
+  }
 
-
+  loadPrediction(id: string) {
+    this.predictionService.getPrediction(id).subscribe(p => {
+      if (p) {
+        this.lat = p.latitude;
+        this.lng = p.longitude;
+        this.showPosition(this.lat, this.lng);
+        this.predictions = [p];
+      }
+    });
   }
 
   mapReady(map) {
@@ -115,21 +127,10 @@ export class MainViewComponent implements OnInit {
     }
   }
 
-  saveLocation() {
-    // const location = new Prediction(this.palce.name, this.palce.id, this.lat, this.lng);
 
-    // this.locationService.saveLocation(location).subscribe( response => {
-    //   if (response != null) {
-    //     console.log(response);
-    //     if (response.status === 200) {
-    //       this.toastr.success('Location saved');
-    //     } else if (response.status === 202) {
-    //       this.toastr.info('Location already saved');
-    //     }
-
-    //   }
-    // });
-
+  refresh() {
+    this.predictions = [];
+    this.loadAllPredictions();
   }
 
 }

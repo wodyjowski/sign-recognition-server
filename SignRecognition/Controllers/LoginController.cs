@@ -107,5 +107,48 @@ namespace SignRecognition.Controllers
 
             return null;
         }
+
+        [HttpPost("AppToken")]
+        public async Task<IActionResult> GetAppToken(TokenAuthFormModel model)
+        {
+            var user = await AuthenticateAsync(new CredentialsFormModel()
+            {
+                UserName = model.UserName,
+                Password = model.Password
+            });
+
+            if (user == null) return BadRequest();
+
+            AppToken token = new AppToken()
+            {
+                Name = model.Name,
+                User = user,
+                CreationDate = DateTime.Now
+            };
+
+            _appDbContext.Add(token);
+            _appDbContext.SaveChanges();
+
+
+            return Ok(token.Id);
+        }
+
+
+        [HttpDelete("{tokenId}")]
+        public IActionResult RemoveToken(string tokenId)
+        {
+
+            if (!ModelState.IsValid || tokenId == null) return BadRequest();
+
+            var tokenToRemove = _appDbContext.Find<AppToken>(tokenId);
+
+            if (tokenToRemove == null) return BadRequest();
+
+            _appDbContext.Remove(tokenToRemove);
+            _appDbContext.SaveChanges();
+
+            return Ok();
+        }
+
     }
 }

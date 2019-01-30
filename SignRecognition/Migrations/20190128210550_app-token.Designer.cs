@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SignRecognition.Models.DBContext;
 
 namespace SignRecognition.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190128210550_app-token")]
+    partial class apptoken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,8 +45,8 @@ namespace SignRecognition.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "2bffeb40-14a3-4d4b-a5e8-4d3a880a3111", ConcurrencyStamp = "eff60537-30cb-43de-ba56-b3fd392c8ada", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "f916d3c9-f95c-4bc7-a9d0-e0a178259ad2", ConcurrencyStamp = "9a283276-0cf2-4d78-a347-40a35cc930b4", Name = "User", NormalizedName = "USER" }
+                        new { Id = "13562c3f-5527-4e23-ac2a-5ba0d36fafd5", ConcurrencyStamp = "4c3316ef-899f-49ea-896a-bacba7c42ff2", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "45908fb1-c976-423d-8a4f-adf5585ed184", ConcurrencyStamp = "1fbf5a59-3a08-4a83-b9f0-81da45f6812e", Name = "User", NormalizedName = "USER" }
                     );
                 });
 
@@ -199,8 +201,6 @@ namespace SignRecognition.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreationDate");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("UserId");
@@ -325,7 +325,7 @@ namespace SignRecognition.Migrations
             modelBuilder.Entity("SignRecognition.Models.AppToken", b =>
                 {
                     b.HasOne("SignRecognition.Models.User", "User")
-                        .WithMany("Tokens")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 

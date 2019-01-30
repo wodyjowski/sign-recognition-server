@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using SignRecognition.Models;
@@ -35,6 +36,15 @@ namespace SignRecognition.Controllers
             _clientFactory = clientFactory;
         }
 
+        [HttpGet("{id}"), AllowAnonymous]
+        public Prediction Get(string id)
+        {
+            var pred = _appDbContext.Find<Prediction>(id);
+
+            return pred;
+        }
+
+
         // GET: api/Prediction
         [HttpGet, AllowAnonymous]
         public IEnumerable<Prediction> Get([FromQuery] int page = 0, [FromQuery] int amount = 20, [FromQuery] string locationName = null)
@@ -53,21 +63,20 @@ namespace SignRecognition.Controllers
         public async Task<IActionResult> GetUAll([FromQuery] int page = 0, [FromQuery] int amount = 20, [FromQuery] string locationName = null)
         {
             var user = await _userManager.GetUserAsync(User);
-            user = new User();
 
             if (user == null)
             {
                 return BadRequest();
             }
 
-            var pred = user.Predictions?.AsQueryable();
+            var pred = _appDbContext.Predictions.Include(p => p.User).Where(p => p.User == user).AsQueryable();
 
             if (pred != null && locationName != null)
             {
                 pred = pred.Where(p => p.LocationName.Contains(locationName));
             }
 
-            return Ok(pred);
+            return Ok(pred.OrderByDescending(p => p.CreationDate).Skip(amount * page).Take(amount));
         }
 
         [HttpGet("PredCount"), AllowAnonymous]
@@ -93,7 +102,7 @@ namespace SignRecognition.Controllers
                 return BadRequest();
             }
 
-            var pred = user.Predictions?.AsQueryable();
+            var pred = _appDbContext.Predictions.Include(p => p.User).Where(p => p.User == user)?.AsQueryable();
 
             if (pred != null && locationName != null)
             {
@@ -132,6 +141,48 @@ namespace SignRecognition.Controllers
             {
                 CreationDate = DateTime.Now,
                 User = null,
+                Class = model.Class,
+                Latitude = model.Latitude,
+                Longitude = model.Longitude,
+                LocationName = googleResponse?.results?.FirstOrDefault()?.formatted_address ?? "Unknown"
+            };
+
+
+            _appDbContext.Add(pred);
+
+            await _appDbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("PostToken"), AllowAnonymous]
+        public async Task<IActionResult> PostToken([FromBody] TokenLocationFormModel model)
+        {
+            var token = _appDbContext.AppTokens.Where(t => t.Id == model.Token).Include(t => t.User).FirstOrDefault();
+            var user = token?.User;
+
+            if (!ModelState.IsValid || model == null || user == null)
+            {
+                return BadRequest();
+            }
+
+            // https://maps.google.com/maps/api/geocode/json?latlng=x,y&sensor=false&key=AIzaSyCFcgapJG17nwAFC0Yohs0x6Z9IsBwclq4
+
+            var apiKey = _config["GoogleMaps:ApiKey"];
+            var request = new HttpRequestMessage(HttpMethod.Get,
+            $"https://maps.google.com/maps/api/geocode/json?latlng={model.Latitude.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}," +
+            $"{model.Longitude.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}&sensor=false&key=AIzaSyCFcgapJG17nwAFC0Yohs0x6Z9IsBwclq4");
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            var parsedJson = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+            var googleResponse = parsedJson.ToObject<GoogleFormModel>();
+
+            Prediction pred = new Prediction()
+            {
+                CreationDate = DateTime.Now,
+                User = user,
                 Class = model.Class,
                 Latitude = model.Latitude,
                 Longitude = model.Longitude,

@@ -76,4 +76,8 @@ import { IPrediction } from '../_models/prediction';
       return this.http.delete(this.predictionUrl + '/' + predId);
     }
 
+    getPrediction(predId: string) {
+      return this.http.get<IPrediction>(this.predictionUrl + '/' + predId);
+    }
+
   }

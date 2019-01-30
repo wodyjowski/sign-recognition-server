@@ -66,7 +66,7 @@ export class PredictionListComponent implements OnInit {
   }
 
   navigate(location: IPrediction) {
-      this.router.navigate(['/'], { queryParams: { lat: location.latitude, lng: location.longitude }});
+      this.router.navigate(['/'], { queryParams: { id: location.id }});
   }
 
   remove (prediction: IPrediction) {

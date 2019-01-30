@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SignRecognition.Models.DBContext;
 
 namespace SignRecognition.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190128212337_user-token-connection")]
+    partial class usertokenconnection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,8 +45,8 @@ namespace SignRecognition.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "2bffeb40-14a3-4d4b-a5e8-4d3a880a3111", ConcurrencyStamp = "eff60537-30cb-43de-ba56-b3fd392c8ada", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "f916d3c9-f95c-4bc7-a9d0-e0a178259ad2", ConcurrencyStamp = "9a283276-0cf2-4d78-a347-40a35cc930b4", Name = "User", NormalizedName = "USER" }
+                        new { Id = "1d6392e4-36e4-4b30-a160-1499094fd652", ConcurrencyStamp = "265a1705-5039-4be5-bfc6-330c4b1a8867", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "0e189c95-c8bd-4fb9-b05c-8216b29999f3", ConcurrencyStamp = "8b489bd5-b5d5-4a97-868f-b0a11e0209b7", Name = "User", NormalizedName = "USER" }
                     );
                 });
 
@@ -198,8 +200,6 @@ namespace SignRecognition.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreationDate");
 
                     b.Property<string>("Name");
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserData } from '.';
+import { Token } from '../account/account.component';
 
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +27,15 @@ export class UserService {
 
     grantAdmin(userId: string) {
         return this.http.post('api/User/GrantAdmin/' + userId, null);
+    }
+
+
+    getTokens(userId: string) {
+        return  this.http.get<Token[]>(`api/Token/` + userId);
+    }
+
+    removeToken(tokenId: string) {
+        return  this.http.delete<Token[]>(`api/Token/` + tokenId);
     }
 }
 
