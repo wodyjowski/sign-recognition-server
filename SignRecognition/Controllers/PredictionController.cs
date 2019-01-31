@@ -155,15 +155,21 @@ namespace SignRecognition.Controllers
             return Ok();
         }
 
+        // method used by mobile app
         [HttpPost("PostToken"), AllowAnonymous]
         public async Task<IActionResult> PostToken([FromBody] TokenLocationFormModel model)
         {
             var token = _appDbContext.AppTokens.Where(t => t.Id == model.Token).Include(t => t.User).FirstOrDefault();
             var user = token?.User;
 
-            if (!ModelState.IsValid || model == null || user == null)
+            if (!ModelState.IsValid || model == null)
             {
                 return BadRequest();
+            }
+
+            if (user == null)
+            {
+                return StatusCode(401);
             }
 
             // https://maps.google.com/maps/api/geocode/json?latlng=x,y&sensor=false&key=AIzaSyCFcgapJG17nwAFC0Yohs0x6Z9IsBwclq4
@@ -193,6 +199,8 @@ namespace SignRecognition.Controllers
             _appDbContext.Add(pred);
 
             await _appDbContext.SaveChangesAsync();
+
+            connectLocation(pred);
 
             return Ok();
         }
@@ -253,5 +261,66 @@ namespace SignRecognition.Controllers
 
             return Ok();
         }
+
+
+        private void connectLocation(Prediction pred)
+        {
+            //var nearLocation = _appDbContext.Locations.Where(l => calculate(l.Latitude, l.Longitude, pred.Latitude, pred.Longitude) < 0.01).FirstOrDefault();
+
+            var nearLocation = _appDbContext.Locations.Where(l => l.Class == pred.Class)
+                .Select(l => new { location = l, distance = Math.Abs(l.Latitude-pred.Latitude) + Math.Abs(l.Longitude - pred.Longitude) }).OrderBy(x => x.distance).FirstOrDefault();
+
+
+
+            if (nearLocation != null && calculateDistance(nearLocation.location, pred) > 0.01)
+            {
+                nearLocation = null;
+            }
+
+            if (nearLocation == null)
+            {
+                Location loc = new Location()
+                {
+                    Class = pred.Class,
+                    Latitude = pred.Latitude,
+                    Longitude = pred.Longitude,
+                    CreationDate = DateTime.Now
+                };
+                _appDbContext.Add(loc);
+                pred.Location = loc;
+                _appDbContext.SaveChanges();
+            }
+            else
+            {
+                var location = nearLocation.location;
+                pred.Location = location;
+                _appDbContext.SaveChanges();
+
+                var lat = _appDbContext.Predictions.Where(p => p.Location == location).Average(p => p.Latitude);
+                var lng = _appDbContext.Predictions.Where(p => p.Location == location).Average(p => p.Longitude);
+
+                location.Latitude = lat;
+                location.Longitude = lng;
+
+                _appDbContext.SaveChanges();
+            }
+        }
+
+        private double calculateDistance(Location location1, Prediction location2)
+        {
+            var R = 6371; // Radius of the earth in km
+            var dLat = (Math.PI / 180)*(location2.Latitude - location1.Latitude);  // deg2rad below
+            var dLon = (Math.PI / 180)*(location2.Longitude - location1.Longitude);
+            var a =
+              Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+              Math.Cos((Math.PI / 180)*(location1.Latitude)) * Math.Cos((Math.PI / 180)*(location2.Latitude)) *
+              Math.Sin(dLon / 2) * Math.Sin(dLon / 2)
+              ;
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            var d = R * c; // Distance in km
+            return d;
+        }
+
+
     }
 }

@@ -10,8 +10,9 @@
 
 
 <agm-map [latitude]="lat" [longitude]="lng" [zoom] = "zoom" (mapReady)="mapReady($event)">
-  <div *ngFor="let prediction of predictions">
-    <agm-marker [latitude]="prediction.latitude" [longitude]="prediction.longitude" [label]="prediction.class">
+  <div *ngFor="let location of locations">
+    <agm-marker [latitude]="location.latitude" [longitude]="location.longitude" [label]="location.class">
+        <agm-info-window *ngIf="isAdmin"><button type="button" class="btn btn-danger" (click)="removeLocation(location)">Remove</button></agm-info-window>
       </agm-marker>
   </div>
 </agm-map>

@@ -11,11 +11,13 @@ import { IPrediction } from '../_models/prediction';
 import { ActivatedRoute } from '@angular/router';
 import { Input } from '@angular/compiler/src/core';
 import { FormControl } from '@angular/forms';
+import { LocationService, FinalLocation } from '../_services/location.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-view',
   templateUrl: './main-view.component.html',
-  providers: [ PredictionService ],
+  providers: [ PredictionService, LocationService ],
   styleUrls: ['./main-view.component.css']
 })
 export class MainViewComponent implements OnInit {
@@ -34,6 +36,9 @@ export class MainViewComponent implements OnInit {
   scalc: SunCalc;
 
   predictions = [];
+  locations = [];
+
+  isAdmin = true;
 
   @ViewChild('search')
   public searchElementRef: ElementRef;
@@ -41,9 +46,13 @@ export class MainViewComponent implements OnInit {
   constructor(private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone, private toastr: ToastrService,
     private predictionService: PredictionService,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute,
+    private locationService: LocationService) {}
 
   ngOnInit() {
+
+    this.isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
+
     this.route.queryParams
     .subscribe(params => {
       // console.log(params);
@@ -82,12 +91,17 @@ export class MainViewComponent implements OnInit {
     });
     if (!this.fromParams) {
       // get predictions
-      this.loadAllPredictions();
+      this.locaAllLocations();
     }
   }
 
-  loadAllPredictions() {
-    this.predictionService.getPredictions().subscribe(pred => this.predictions = pred);
+  // loadAllPredictions() {
+  //    this.predictionService.getPredictions().subscribe(pred => this.predictions = pred);
+  // }
+
+  locaAllLocations() {
+    this.locations = [];
+    this.locationService.getLocations().subscribe(l => this.locations = l);
   }
 
   loadPrediction(id: string) {
@@ -96,7 +110,7 @@ export class MainViewComponent implements OnInit {
         this.lat = p.latitude;
         this.lng = p.longitude;
         this.showPosition(this.lat, this.lng);
-        this.predictions = [p];
+        this.locations = [p];
       }
     });
   }
@@ -130,7 +144,20 @@ export class MainViewComponent implements OnInit {
 
   refresh() {
     this.predictions = [];
-    this.loadAllPredictions();
+    this.locaAllLocations();
+  }
+
+
+  removeLocation(location: FinalLocation) {
+    this.locationService.removeLocation(location.id).pipe(first())
+    .subscribe(
+      data => {
+          this.toastr.success('Location Removed');
+          this.locaAllLocations();
+            },
+      error => {
+              this.toastr.error('Location removal error');
+            });
   }
 
 }

@@ -1,4 +1,5 @@
-﻿using SignRecognition.Interfaces;
+﻿using Newtonsoft.Json;
+using SignRecognition.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace SignRecognition.Models
         public string Class { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        [JsonIgnore]
+        public ICollection<Prediction> Predictions { get; set; }
     }
 }
