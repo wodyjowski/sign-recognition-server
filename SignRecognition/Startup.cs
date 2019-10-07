@@ -15,6 +15,8 @@ using SignRecognition.Models.DatabaseSeed;
 using SignRecognition.Models.DBContext;
 using System.Text;
 using System.Threading.Tasks;
+using Npgsql;
+using System;
 
 namespace SignRecognition
 {
@@ -42,9 +44,9 @@ namespace SignRecognition
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-
+            
             services.AddDbContext<ApplicationDbContext>(options =>
-                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                     options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<User>(options =>
             {

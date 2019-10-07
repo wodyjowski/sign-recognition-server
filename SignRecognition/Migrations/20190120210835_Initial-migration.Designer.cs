@@ -40,7 +40,7 @@ namespace SignRecognition.Migrations
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasFilter("NormalizedName IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
                 });
