@@ -17,5 +17,5 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:2.1
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENV ASPNETCORE_URLS http://+:80
-EXPOSE [::1]:5432
+EXPOSE 5432
 ENTRYPOINT ["dotnet", "SignRecognition.dll"]

@@ -44,9 +44,11 @@ namespace SignRecognition
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-            
+
+            string dbUrl = Environment.GetEnvironmentVariable("JDBC_DATABASE_URL");
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                     options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                     options.UseNpgsql(dbUrl));
 
             services.AddDefaultIdentity<User>(options =>
             {
