@@ -1,4 +1,21 @@
-FROM microsoft/dotnet:2.1-aspnetcore-runtime
+FROM mcr.microsoft.com/dotnet/core/sdk:2.1 AS build-env
 WORKDIR /app
-COPY . .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet SignRecognition.dll
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - \
+	&& apt-get install -y nodejs
+
+
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.1
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENV ASPNETCORE_URLS http://+:80
+EXPOSE [::1]:5432
+ENTRYPOINT ["dotnet", "SignRecognition.dll"]
