@@ -45,10 +45,21 @@ namespace SignRecognition
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            string dbUrl = Environment.GetEnvironmentVariable("JDBC_DATABASE_URL");
+            string dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            var databaseUri = new Uri(dbUrl);
+            var userInfo = databaseUri.UserInfo.Split(':');
+
+            var builder = new NpgsqlConnectionStringBuilder
+            {
+                Host = databaseUri.Host,
+                Port = databaseUri.Port,
+                Username = userInfo[0],
+                Password = userInfo[1],
+                Database = databaseUri.LocalPath.TrimStart('/')
+            };
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                     options.UseNpgsql(dbUrl));
+                     options.UseNpgsql(builder.ToString()));
 
             services.AddDefaultIdentity<User>(options =>
             {
