@@ -22,7 +22,7 @@ namespace SignRecognition
 
         public static IWebHost CreateWebHostBuilder(string[] args)
         {
-            var port = Environment.GetEnvironmentVariable("PORT");
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "3000";
 
             var host = WebHost.CreateDefaultBuilder(args)
                         .UseStartup<Startup>()

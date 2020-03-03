@@ -46,20 +46,30 @@ namespace SignRecognition
             });
 
             string dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-            var databaseUri = new Uri(dbUrl);
-            var userInfo = databaseUri.UserInfo.Split(':');
 
-            var builder = new NpgsqlConnectionStringBuilder
+            string connectionString = null;
+            if(dbUrl != null)
             {
-                Host = databaseUri.Host,
-                Port = databaseUri.Port,
-                Username = userInfo[0],
-                Password = userInfo[1],
-                Database = databaseUri.LocalPath.TrimStart('/')
-            };
+                var databaseUri = new Uri(dbUrl);
+                var userInfo = databaseUri.UserInfo.Split(':');
+
+                var builder = new NpgsqlConnectionStringBuilder
+                {
+                    Host = databaseUri.Host,
+                    Port = databaseUri.Port,
+                    Username = userInfo[0],
+                    Password = userInfo[1],
+                    Database = databaseUri.LocalPath.TrimStart('/')
+                };
+                connectionString = builder.ToString();
+            }
+            else
+            {
+                connectionString = Configuration.GetConnectionString("DefaultConnection");
+            }
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                     options.UseNpgsql(builder.ToString()));
+                     options.UseNpgsql(connectionString));
 
             services.AddDefaultIdentity<User>(options =>
             {
