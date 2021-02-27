@@ -26,7 +26,8 @@ export class AccountComponent implements OnInit {
 
   user: UserData;
   isAdmin = false;
-
+  currentUserName = JSON.parse(localStorage.getItem('currentUserName'));
+  sameUser: Boolean = true;
   tokens: Token[];
 
 
@@ -57,10 +58,12 @@ export class AccountComponent implements OnInit {
         const id = params.id;
         if (id && this.isAdmin) {
           this.userService.getUserById(id).subscribe(u => {
+            if(u.userName !== this.currentUserName)
+              this.sameUser = false;
+
             this.setUser(u);
           });
         } else {
-
           this.authenticationService.getUserData().subscribe(u => {
             this.setUser(u);
           });

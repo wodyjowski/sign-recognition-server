@@ -45,7 +45,7 @@
     </div>
     <div *ngIf="error" class="alert alert-danger">{{error}}</div>
 </form>
-<div *ngIf="user && !user.adminRights">
+<div *ngIf="isAdmin && !sameUser">
     <div class="form-group btn-save">
         <button [disabled]="loading" class="btn btn-danger" (click)="deleteUser(user)">Delete user</button>
     </div>
