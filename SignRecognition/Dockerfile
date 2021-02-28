@@ -1,7 +1,8 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:2.1 AS build-env
 WORKDIR /app
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 	&& apt-get install -y nodejs
+
 
 
 # Copy csproj and restore as distinct layers

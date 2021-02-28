@@ -8,6 +8,8 @@ https://github.com/wodyjowski/sign-recognition-ios
 
 .NET Core + Angular
 
+![App main page](/Preview/scr1.jpg)
+
 ## Working version
 The app is currently deployed in Heroku  
 https://signrecognition.herokuapp.com/

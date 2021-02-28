@@ -34,10 +34,16 @@ namespace SignRecognition
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // services.AddHttpsRedirection(options =>
+            // {
+            //     options.HttpsPort = 443;
+            // });
+
             services.AddSingleton<IJwtFactory, JwtFactory>();
 
             //Http client for google maps requests
             services.AddHttpClient();
+
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -120,6 +126,8 @@ namespace SignRecognition
             }
             else
             {
+
+                app.UseHttpsRedirection();
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
@@ -130,7 +138,6 @@ namespace SignRecognition
             ApplicationDbInitializer.SeedUsers(userManager, 
                 Configuration["AdminUser:Username"], Configuration["AdminUser:Email"], Configuration["AdminUser:Password"]);
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
